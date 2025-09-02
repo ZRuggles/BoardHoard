@@ -46,7 +46,16 @@ namespace Microsoft.AspNetCore.Routing
                 [FromForm] string returnUrl) =>
             {
                 await signInManager.SignOutAsync();
-                return TypedResults.LocalRedirect($"~/{returnUrl}");
+
+                // Fix the URL construction to avoid double slashes
+                if (string.IsNullOrEmpty(returnUrl) || returnUrl == "/")
+                {
+                    return TypedResults.LocalRedirect("~/");
+                }
+
+                // Ensure the returnUrl starts with a single slash and is local
+                var cleanUrl = returnUrl.TrimStart('/');
+                return TypedResults.LocalRedirect($"~/{cleanUrl}");
             });
 
             var manageGroup = accountGroup.MapGroup("/Manage").RequireAuthorization();
