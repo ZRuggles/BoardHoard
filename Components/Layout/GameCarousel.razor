@@ -1,0 +1,129 @@
+﻿@using Boardgames.Shared
+@inherits LayoutComponentBase
+@inject NavigationManager Nav
+
+@if (chunks.Count == 0)
+{
+    <p class="loading">No items.</p>
+}
+else
+{
+    <section class="game-section">
+        @if (!string.IsNullOrWhiteSpace(Title))
+        {
+            <h2>@Title</h2>
+        }
+
+        <div id="@CarouselId" class="carousel slide" data-bs-ride="false" data-bs-touch="true">
+            <div class="carousel-inner">
+                @for (int i = 0; i < chunks.Count; i++)
+                {
+                    var slide = chunks[i];
+                    <div class="carousel-item @(i == 0 ? "active" : null)">
+                        <div class="carousel-grid">
+                            @foreach (var g in slide)
+                            {
+                                var kind = GetKind(g); // "board" or "card"
+                                <div class="game-card">
+                                    <img src="@g.ImageUrl" alt="@g.Title cover" />
+                                    <div class="info">
+                                        <h3>@g.Title</h3>
+                                        <p class="meta">@g.Year • @g.MinPlayers–@g.MaxPlayers players</p>
+
+                                        @if (ShowRatings)
+                                        {
+                                            <div class="rating" title="@($"{g.AverageRating:0.0} stars • {(g.Ratings?.Count ?? 0)} ratings")">
+                                                @foreach (var cls in GetStarClasses(g.AverageRating))
+                                                {
+                                                    <i class="@cls"></i>
+                                                }
+                                                <span class="count">(@(g.Ratings?.Count ?? 0))</span>
+                                            </div>
+                                        }
+
+                                        @if (ShowDetails && !string.IsNullOrWhiteSpace(g.Publisher))
+                                        {
+                                            <p class="publisher">@g.Publisher</p>
+                                        }
+
+                                        @if (ShowDetails && !string.IsNullOrWhiteSpace(g.Description))
+                                        {
+                                            <p class="desc">@TruncateDescription(g.Description)</p>
+                                        }
+                                    </div>
+
+                                    <!-- make whole card clickable -->
+                                    <a class="stretched-link" href="@($"/game/{kind}/{g.Id}")"></a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (chunks.Count > 1)
+            {
+                <button class="carousel-control-prev" type="button" data-bs-target="#@CarouselId" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#@CarouselId" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            }
+        </div>
+    </section>
+}
+
+@code {
+    [Parameter] public string Title { get; set; } = "";
+    [Parameter] public string CarouselId { get; set; } = Guid.NewGuid().ToString("N");
+    [Parameter] public IEnumerable<IGame> Items { get; set; } = Enumerable.Empty<IGame>();
+    [Parameter] public int CardsPerSlide { get; set; } = 8;
+    [Parameter] public bool ShowDetails { get; set; } = false;
+    [Parameter] public bool ShowRatings { get; set; } = true;
+    [Parameter] public int MaxDescriptionLength { get; set; } = 100;
+
+    private List<IGame[]> chunks = new();
+
+    protected override void OnParametersSet()
+    {
+        chunks = Items?.Chunk(CardsPerSlide).ToList() ?? new();
+    }
+
+    private static string GetKind(IGame g) => g is BoardGame ? "board" : "card";
+
+    private string TruncateDescription(string description)
+    {
+        if (string.IsNullOrEmpty(description) || description.Length <= MaxDescriptionLength)
+            return description ?? string.Empty;
+
+        // Find the last space before or at the MaxDescriptionLength position
+        int truncateAt = description.LastIndexOf(' ', MaxDescriptionLength);
+
+        // If no space found within the limit, just truncate at MaxDescriptionLength
+        if (truncateAt <= 0)
+            truncateAt = MaxDescriptionLength;
+
+        return description.Substring(0, truncateAt).TrimEnd() + "...";
+    }
+
+    private static IEnumerable<string> GetStarClasses(double rating)
+    {
+        // 0–5 -> 5 icons with halves
+        var stars = new List<string>(5);
+        var full = (int)Math.Floor(rating);
+        var frac = rating - full;
+        var hasHalf = frac >= 0.25 && frac < 0.75;
+        var bump = frac >= 0.75 ? 1 : 0;
+
+        for (int i = 0; i < 5; i++)
+        {
+            if (i < full + bump) stars.Add("bi bi-star-fill");
+            else if (hasHalf && i == full) stars.Add("bi bi-star-half");
+            else stars.Add("bi bi-star");
+        }
+        return stars;
+    }
+}

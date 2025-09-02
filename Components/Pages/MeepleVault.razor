@@ -1,0 +1,98 @@
+﻿@page "/vault"
+@using Boardgames.Shared
+@inject BoardHoard.Services.IBoardGameService BoardSvc
+@inject BoardHoard.Services.ICardGameService CardSvc
+@attribute [Authorize]
+
+<h1 class="page-title">Meeple Vault</h1>
+
+@if (vault == null)
+{
+    <div class="loading">Loading…</div>
+}
+else
+{
+    <div class="vault-hero">
+        <div class="dial" aria-hidden="true">
+            <div class="rotor">
+                <div class="ticks"></div>
+                <div class="hub"></div>
+            </div>
+            <div class="pointer"></div>
+        </div>
+        <div class="hero-text">
+            <h2>Rare • Old • Sentimental</h2>
+            <p>Hand-picked gems from the hoard.</p>
+        </div>
+    </div>
+
+    <div class="vault-grid">
+        @foreach (var g in vault)
+        {
+            <div class="vault-card">
+                <img src="@g.ImageUrl" alt="@g.Title cover" />
+                <div class="plate">
+                    <h3>@g.Title</h3>
+                    <p class="meta">
+                        <i class="bi bi-hourglass-split"></i> @g.Year
+                        <span class="sep">•</span>
+                        <i class="bi bi-people"></i> @g.MinPlayers–@g.MaxPlayers
+                    </p>
+                    <div class="badges">
+                        <span class="badge-rare"><i class="bi bi-gem"></i> @g.RarityScore</span>
+                        <span class="badge-sent"><i class="bi bi-heart-fill"></i> @g.SentimentalScore</span>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<IGame>? vault;
+
+    // weights for ranking the eligible items
+    private const double WAge = 0.45, WRarity = 0.35, WSent = 0.20;
+
+    // eligibility thresholds
+    private const int RarityMin = 50;
+    private const int SentimentMin = 50;
+    private const int YearCutoff = 2000; // include games older than this year
+
+    protected override async Task OnInitializedAsync()
+    {
+        var boards = await BoardSvc.GetAllAsync();
+        var cards = await CardSvc.GetAllAsync();
+        var all = boards.Cast<IGame>().Concat(cards.Cast<IGame>()).ToList();
+
+        // Filter first: only “vault-worthy” games
+        var eligible = all.Where(g =>
+               g.RarityScore > RarityMin
+            || g.SentimentalScore > SentimentMin
+            || g.Year < YearCutoff).ToList();
+
+        if (eligible.Count == 0)
+        {
+            vault = new List<IGame>(); // or show a “no matches yet” message
+            return;
+        }
+
+        var now = DateTime.UtcNow.Year;
+        var maxAge = Math.Max(1, eligible.Max(g => now - g.Year)); // normalize within eligible
+
+        double Score(IGame g)
+        {
+            var ageScore = Math.Clamp((now - g.Year) / (double)maxAge, 0, 1); // older = higher
+            var rarity = Math.Clamp(g.RarityScore / 100.0, 0, 1);
+            var sent = Math.Clamp(g.SentimentalScore / 100.0, 0, 1);
+            return WAge * ageScore + WRarity * rarity + WSent * sent;
+        }
+
+        vault = eligible
+            .OrderByDescending(Score)
+            .ThenBy(g => g.Title)
+            .Take(12)
+            .ToList();
+    }
+}
+

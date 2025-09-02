@@ -1,0 +1,38 @@
+:root {
+    --bh-accent: #71c8b5;
+    --bh-bg: #121212;
+    --bh-surface: #1b1b1b;
+}
+
+/* Bootstrap dark variable overrides */
+html[data-bs-theme="dark"] {
+    --bs-body-bg: var(--bh-bg);
+    --bs-body-color: #f1f3f5;
+    --bs-border-color: rgba(255,255,255,.12);
+    --bs-link-color: var(--bh-accent);
+    --bs-link-hover-color: #5bb0a0;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--bh-bg);
+    color: var(--bs-body-color);
+}
+
+a {
+    text-decoration: none;
+}
+
+.btn-primary {
+    background-color: var(--bh-accent);
+    border: none;
+}
+
+    .btn-primary:hover {
+        background-color: #5bb0a0;
+    }
+
+.page-title {
+    font-weight: 800;
+    margin-bottom: 1rem;
+}

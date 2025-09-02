@@ -1,0 +1,2391 @@
+{
+  "Version": 1,
+  "Hash": "kVjJX/43a1Mwrp/NcOAcHFEMvimkbFW36vNXUKNKY/U=",
+  "Source": "BoardHoard",
+  "BasePath": "_content/BoardHoard",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "BoardHoard\\wwwroot",
+      "Source": "BoardHoard",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\obj\\Debug\\net8.0\\scopedcss\\bundle\\BoardHoard.styles.css",
+      "SourceId": "BoardHoard",
+      "SourceType": "Computed",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\obj\\Debug\\net8.0\\scopedcss\\bundle\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "BoardHoard#[.{fingerprint}]?.styles.css",
+      "AssetKind": "All",
+      "AssetMode": "CurrentProject",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "ScopedCss",
+      "AssetTraitValue": "ApplicationBundle",
+      "Fingerprint": "6ytha9c65g",
+      "Integrity": "3v+7Qey6VA5N6Jd9r5+4ivp6mL4+zK91v7wI+BOXHxs=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\obj\\Debug\\net8.0\\scopedcss\\bundle\\BoardHoard.styles.css"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\BoardHoard.bundle.scp.css",
+      "SourceId": "BoardHoard",
+      "SourceType": "Computed",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "BoardHoard#[.{fingerprint}]!.bundle.scp.css",
+      "AssetKind": "All",
+      "AssetMode": "Reference",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "ScopedCss",
+      "AssetTraitValue": "ProjectBundle",
+      "Fingerprint": "6ytha9c65g",
+      "Integrity": "3v+7Qey6VA5N6Jd9r5+4ivp6mL4+zK91v7wI+BOXHxs=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\BoardHoard.bundle.scp.css"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\app.css",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "app#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ubupkyt0jd",
+      "Integrity": "ypH4rA2ouMAIo2UjeAP+x1JXDPwJw2YpRnGuN3Dev90=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\app.css"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\BoardHoardLogo.png",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "images/BoardHoardLogo#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "hc0xdrok1i",
+      "Integrity": "/4YcldvUlNqOAy+85ytG1J+Vt3Yvpcy4on2kJFFkKwE=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\BoardHoardLogo.png"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\CamelUp.png",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "images/CamelUp#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "af156mqj9y",
+      "Integrity": "dtROU6f034xWk0JKeo9JR5K7/BTg8cL9kZ77f15likk=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\CamelUp.png"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\CardsAgainstHumanity.png",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "images/CardsAgainstHumanity#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "rlkteeiskt",
+      "Integrity": "j/NGEBrMrBUjCGtnOZSaKRg63XbzXVkNqdp8SioSv3A=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\CardsAgainstHumanity.png"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\Catan.jpg",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "images/Catan#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "llwob7uqq2",
+      "Integrity": "933RbuchUpnajfSeE/mGQR4TgUKWWUE7a5wLEV5uA3c=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\Catan.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\ChampionsOfMidgard.jpg",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "images/ChampionsOfMidgard#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "4jzx7dwn4e",
+      "Integrity": "4FLUGiw6v8+xIQJRbIpPqtdzGeRElRX6YjU5U9RfX7g=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\ChampionsOfMidgard.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\DutchBlitz.jpg",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "images/DutchBlitz#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "2s31o5sezu",
+      "Integrity": "nqr6YvlZZu2525/af+MjryzRjG3oiTcg0XA3SkEkCnE=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\DutchBlitz.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\GameOfLife.jpg",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "images/GameOfLife#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "u2ezyxvv4d",
+      "Integrity": "BmiE9pyNaqNHPUHD2Uvp/eq3qI/sNqdZ1nIfxakmFUo=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\GameOfLife.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\HuesAndCues.jpg",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "images/HuesAndCues#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "3n1b3a98rn",
+      "Integrity": "D7h/Yi9YcjxT+I4cAhbUFZ9v29FAr0J8fvLmF2Vd+Lc=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\HuesAndCues.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\LordsOfWaterdeep.jpg",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "images/LordsOfWaterdeep#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "92159j4s8n",
+      "Integrity": "X1YcJZciSNuJB0HN0e9aR/K0uCLJhRRtGpdRITr9PeQ=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\LordsOfWaterdeep.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\Monopoly.jpg",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "images/Monopoly#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ta4ccmuw49",
+      "Integrity": "xSQKitmASypZM+P4xwX9zU4tDMim1KcPnvcpWZsv7ng=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\Monopoly.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\NutsAboutMutts.jpg",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "images/NutsAboutMutts#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "99t3q7x4ps",
+      "Integrity": "3ZzKGn06KaoDSc7NmkSy4vWOJ6uiuOifwHA01arP2kU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\NutsAboutMutts.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\SecretHitler.png",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "images/SecretHitler#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ukc43wmomn",
+      "Integrity": "UiToE32ukICBoHRZhoPcnNXF5dFOdCfLl7cZJUVycFY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\SecretHitler.png"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\SmallBoardHoardLogo.png",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "images/SmallBoardHoardLogo#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ub2whezqjt",
+      "Integrity": "NtM3ebQHEl/l2bMRqukVXq5YXLLFXx25rtIjVZqLp9k=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\SmallBoardHoardLogo.png"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\SmallBoardHoardLogo-removebg.png",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "images/SmallBoardHoardLogo-removebg#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "vpzy8rn09q",
+      "Integrity": "U62ACz18F0Fuay1Ur+rzQutXczlM1t/WZ19L+A0X2RM=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\SmallBoardHoardLogo-removebg.png"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\Sorry!.jpg",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "images/Sorry!#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "v50omnuj3p",
+      "Integrity": "LbcMG6KqNOa+w8O6bdQk0OTBFkXXG6iTNJTkum6lq4w=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\Sorry!.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\Splendor.jpg",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "images/Splendor#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "elu5r8z88x",
+      "Integrity": "3oolgX/e/WzF4YYFkSSxt/ViMGx294SXG0eM6/ewEu0=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\Splendor.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\TCGCP.jpg",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "images/TCGCP#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "6b1yxhs4pd",
+      "Integrity": "IqB2VIf2reMsxlYgbJN18bNzXkvX5xLQvrnUc2GNdAQ=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\TCGCP.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\ticketToRide.jpg",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "images/ticketToRide#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "p5ib52wcf3",
+      "Integrity": "rZ2VfLbZJksXBsqrWx7HZRkFC6Kzz+Hnee1y0r/j8RY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\ticketToRide.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\uploads\\sushi-go-20250812043055843.jpg",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "images/uploads/sushi-go-20250812043055843#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "lyts58od1e",
+      "Integrity": "rYtVyyAKH+hMSyHSzEIlRZ/W9Dz+Cb9Dp1Y7Y0HFc2g=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\uploads\\sushi-go-20250812043055843.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\Wingspan.jpg",
+      "SourceId": "BoardHoard",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\",
+      "BasePath": "_content/BoardHoard",
+      "RelativePath": "images/Wingspan#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "he98gvgcgf",
+      "Integrity": "mc3Bp69EmDBrcF6QVEFHCgYrkxJZyYEAIaz4nxDF4O4=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\Wingspan.jpg"
+    }
+  ],
+  "Endpoints": [
+    {
+      "Route": "app.css",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\app.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "739"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ypH4rA2ouMAIo2UjeAP+x1JXDPwJw2YpRnGuN3Dev90=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 19:54:44 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-ypH4rA2ouMAIo2UjeAP+x1JXDPwJw2YpRnGuN3Dev90="
+        }
+      ]
+    },
+    {
+      "Route": "app.ubupkyt0jd.css",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\app.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "739"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ypH4rA2ouMAIo2UjeAP+x1JXDPwJw2YpRnGuN3Dev90=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 19:54:44 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ubupkyt0jd"
+        },
+        {
+          "Name": "label",
+          "Value": "app.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-ypH4rA2ouMAIo2UjeAP+x1JXDPwJw2YpRnGuN3Dev90="
+        }
+      ]
+    },
+    {
+      "Route": "BoardHoard.6ytha9c65g.bundle.scp.css",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\BoardHoard.bundle.scp.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "31598"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"3v+7Qey6VA5N6Jd9r5+4ivp6mL4+zK91v7wI+BOXHxs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 02 Sep 2025 03:40:04 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "6ytha9c65g"
+        },
+        {
+          "Name": "label",
+          "Value": "BoardHoard.bundle.scp.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-3v+7Qey6VA5N6Jd9r5+4ivp6mL4+zK91v7wI+BOXHxs="
+        }
+      ]
+    },
+    {
+      "Route": "BoardHoard.6ytha9c65g.styles.css",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\obj\\Debug\\net8.0\\scopedcss\\bundle\\BoardHoard.styles.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "31598"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"3v+7Qey6VA5N6Jd9r5+4ivp6mL4+zK91v7wI+BOXHxs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 02 Sep 2025 03:40:04 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "6ytha9c65g"
+        },
+        {
+          "Name": "label",
+          "Value": "BoardHoard.styles.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-3v+7Qey6VA5N6Jd9r5+4ivp6mL4+zK91v7wI+BOXHxs="
+        }
+      ]
+    },
+    {
+      "Route": "BoardHoard.bundle.scp.css",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\BoardHoard.bundle.scp.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "31598"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"3v+7Qey6VA5N6Jd9r5+4ivp6mL4+zK91v7wI+BOXHxs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 02 Sep 2025 03:40:04 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-3v+7Qey6VA5N6Jd9r5+4ivp6mL4+zK91v7wI+BOXHxs="
+        }
+      ]
+    },
+    {
+      "Route": "BoardHoard.styles.css",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\obj\\Debug\\net8.0\\scopedcss\\bundle\\BoardHoard.styles.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "31598"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"3v+7Qey6VA5N6Jd9r5+4ivp6mL4+zK91v7wI+BOXHxs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 02 Sep 2025 03:40:04 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-3v+7Qey6VA5N6Jd9r5+4ivp6mL4+zK91v7wI+BOXHxs="
+        }
+      ]
+    },
+    {
+      "Route": "images/BoardHoardLogo.hc0xdrok1i.png",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\BoardHoardLogo.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2237987"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"/4YcldvUlNqOAy+85ytG1J+Vt3Yvpcy4on2kJFFkKwE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 09 Aug 2025 23:58:01 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "hc0xdrok1i"
+        },
+        {
+          "Name": "label",
+          "Value": "images/BoardHoardLogo.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-/4YcldvUlNqOAy+85ytG1J+Vt3Yvpcy4on2kJFFkKwE="
+        }
+      ]
+    },
+    {
+      "Route": "images/BoardHoardLogo.png",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\BoardHoardLogo.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2237987"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"/4YcldvUlNqOAy+85ytG1J+Vt3Yvpcy4on2kJFFkKwE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 09 Aug 2025 23:58:01 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-/4YcldvUlNqOAy+85ytG1J+Vt3Yvpcy4on2kJFFkKwE="
+        }
+      ]
+    },
+    {
+      "Route": "images/CamelUp.af156mqj9y.png",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\CamelUp.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1488349"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"dtROU6f034xWk0JKeo9JR5K7/BTg8cL9kZ77f15likk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 12 Aug 2025 03:25:15 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "af156mqj9y"
+        },
+        {
+          "Name": "label",
+          "Value": "images/CamelUp.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-dtROU6f034xWk0JKeo9JR5K7/BTg8cL9kZ77f15likk="
+        }
+      ]
+    },
+    {
+      "Route": "images/CamelUp.png",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\CamelUp.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1488349"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"dtROU6f034xWk0JKeo9JR5K7/BTg8cL9kZ77f15likk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 12 Aug 2025 03:25:15 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-dtROU6f034xWk0JKeo9JR5K7/BTg8cL9kZ77f15likk="
+        }
+      ]
+    },
+    {
+      "Route": "images/CardsAgainstHumanity.png",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\CardsAgainstHumanity.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2610"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"j/NGEBrMrBUjCGtnOZSaKRg63XbzXVkNqdp8SioSv3A=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 18:31:56 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-j/NGEBrMrBUjCGtnOZSaKRg63XbzXVkNqdp8SioSv3A="
+        }
+      ]
+    },
+    {
+      "Route": "images/CardsAgainstHumanity.rlkteeiskt.png",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\CardsAgainstHumanity.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2610"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"j/NGEBrMrBUjCGtnOZSaKRg63XbzXVkNqdp8SioSv3A=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 18:31:56 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "rlkteeiskt"
+        },
+        {
+          "Name": "label",
+          "Value": "images/CardsAgainstHumanity.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-j/NGEBrMrBUjCGtnOZSaKRg63XbzXVkNqdp8SioSv3A="
+        }
+      ]
+    },
+    {
+      "Route": "images/Catan.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\Catan.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "108451"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"933RbuchUpnajfSeE/mGQR4TgUKWWUE7a5wLEV5uA3c=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 18:22:27 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-933RbuchUpnajfSeE/mGQR4TgUKWWUE7a5wLEV5uA3c="
+        }
+      ]
+    },
+    {
+      "Route": "images/Catan.llwob7uqq2.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\Catan.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "108451"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"933RbuchUpnajfSeE/mGQR4TgUKWWUE7a5wLEV5uA3c=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 18:22:27 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "llwob7uqq2"
+        },
+        {
+          "Name": "label",
+          "Value": "images/Catan.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-933RbuchUpnajfSeE/mGQR4TgUKWWUE7a5wLEV5uA3c="
+        }
+      ]
+    },
+    {
+      "Route": "images/ChampionsOfMidgard.4jzx7dwn4e.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\ChampionsOfMidgard.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "66204"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"4FLUGiw6v8+xIQJRbIpPqtdzGeRElRX6YjU5U9RfX7g=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 18:35:28 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "4jzx7dwn4e"
+        },
+        {
+          "Name": "label",
+          "Value": "images/ChampionsOfMidgard.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-4FLUGiw6v8+xIQJRbIpPqtdzGeRElRX6YjU5U9RfX7g="
+        }
+      ]
+    },
+    {
+      "Route": "images/ChampionsOfMidgard.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\ChampionsOfMidgard.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "66204"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"4FLUGiw6v8+xIQJRbIpPqtdzGeRElRX6YjU5U9RfX7g=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 18:35:28 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-4FLUGiw6v8+xIQJRbIpPqtdzGeRElRX6YjU5U9RfX7g="
+        }
+      ]
+    },
+    {
+      "Route": "images/DutchBlitz.2s31o5sezu.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\DutchBlitz.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "9502"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"nqr6YvlZZu2525/af+MjryzRjG3oiTcg0XA3SkEkCnE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 20:15:27 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "2s31o5sezu"
+        },
+        {
+          "Name": "label",
+          "Value": "images/DutchBlitz.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-nqr6YvlZZu2525/af+MjryzRjG3oiTcg0XA3SkEkCnE="
+        }
+      ]
+    },
+    {
+      "Route": "images/DutchBlitz.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\DutchBlitz.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "9502"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"nqr6YvlZZu2525/af+MjryzRjG3oiTcg0XA3SkEkCnE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 20:15:27 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-nqr6YvlZZu2525/af+MjryzRjG3oiTcg0XA3SkEkCnE="
+        }
+      ]
+    },
+    {
+      "Route": "images/GameOfLife.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\GameOfLife.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "57275"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"BmiE9pyNaqNHPUHD2Uvp/eq3qI/sNqdZ1nIfxakmFUo=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 19:14:16 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-BmiE9pyNaqNHPUHD2Uvp/eq3qI/sNqdZ1nIfxakmFUo="
+        }
+      ]
+    },
+    {
+      "Route": "images/GameOfLife.u2ezyxvv4d.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\GameOfLife.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "57275"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"BmiE9pyNaqNHPUHD2Uvp/eq3qI/sNqdZ1nIfxakmFUo=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 19:14:16 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "u2ezyxvv4d"
+        },
+        {
+          "Name": "label",
+          "Value": "images/GameOfLife.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-BmiE9pyNaqNHPUHD2Uvp/eq3qI/sNqdZ1nIfxakmFUo="
+        }
+      ]
+    },
+    {
+      "Route": "images/HuesAndCues.3n1b3a98rn.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\HuesAndCues.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "38868"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"D7h/Yi9YcjxT+I4cAhbUFZ9v29FAr0J8fvLmF2Vd+Lc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 19:17:38 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "3n1b3a98rn"
+        },
+        {
+          "Name": "label",
+          "Value": "images/HuesAndCues.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-D7h/Yi9YcjxT+I4cAhbUFZ9v29FAr0J8fvLmF2Vd+Lc="
+        }
+      ]
+    },
+    {
+      "Route": "images/HuesAndCues.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\HuesAndCues.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "38868"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"D7h/Yi9YcjxT+I4cAhbUFZ9v29FAr0J8fvLmF2Vd+Lc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 19:17:38 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-D7h/Yi9YcjxT+I4cAhbUFZ9v29FAr0J8fvLmF2Vd+Lc="
+        }
+      ]
+    },
+    {
+      "Route": "images/LordsOfWaterdeep.92159j4s8n.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\LordsOfWaterdeep.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "234125"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"X1YcJZciSNuJB0HN0e9aR/K0uCLJhRRtGpdRITr9PeQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 18:33:55 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "92159j4s8n"
+        },
+        {
+          "Name": "label",
+          "Value": "images/LordsOfWaterdeep.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-X1YcJZciSNuJB0HN0e9aR/K0uCLJhRRtGpdRITr9PeQ="
+        }
+      ]
+    },
+    {
+      "Route": "images/LordsOfWaterdeep.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\LordsOfWaterdeep.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "234125"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"X1YcJZciSNuJB0HN0e9aR/K0uCLJhRRtGpdRITr9PeQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 18:33:55 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-X1YcJZciSNuJB0HN0e9aR/K0uCLJhRRtGpdRITr9PeQ="
+        }
+      ]
+    },
+    {
+      "Route": "images/Monopoly.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\Monopoly.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "284913"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"xSQKitmASypZM+P4xwX9zU4tDMim1KcPnvcpWZsv7ng=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 19:15:47 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-xSQKitmASypZM+P4xwX9zU4tDMim1KcPnvcpWZsv7ng="
+        }
+      ]
+    },
+    {
+      "Route": "images/Monopoly.ta4ccmuw49.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\Monopoly.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "284913"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"xSQKitmASypZM+P4xwX9zU4tDMim1KcPnvcpWZsv7ng=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 19:15:47 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ta4ccmuw49"
+        },
+        {
+          "Name": "label",
+          "Value": "images/Monopoly.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-xSQKitmASypZM+P4xwX9zU4tDMim1KcPnvcpWZsv7ng="
+        }
+      ]
+    },
+    {
+      "Route": "images/NutsAboutMutts.99t3q7x4ps.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\NutsAboutMutts.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "12955"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"3ZzKGn06KaoDSc7NmkSy4vWOJ6uiuOifwHA01arP2kU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 12 Aug 2025 03:59:27 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "99t3q7x4ps"
+        },
+        {
+          "Name": "label",
+          "Value": "images/NutsAboutMutts.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-3ZzKGn06KaoDSc7NmkSy4vWOJ6uiuOifwHA01arP2kU="
+        }
+      ]
+    },
+    {
+      "Route": "images/NutsAboutMutts.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\NutsAboutMutts.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "12955"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"3ZzKGn06KaoDSc7NmkSy4vWOJ6uiuOifwHA01arP2kU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 12 Aug 2025 03:59:27 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-3ZzKGn06KaoDSc7NmkSy4vWOJ6uiuOifwHA01arP2kU="
+        }
+      ]
+    },
+    {
+      "Route": "images/SecretHitler.png",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\SecretHitler.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "45678"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"UiToE32ukICBoHRZhoPcnNXF5dFOdCfLl7cZJUVycFY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 18:33:02 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-UiToE32ukICBoHRZhoPcnNXF5dFOdCfLl7cZJUVycFY="
+        }
+      ]
+    },
+    {
+      "Route": "images/SecretHitler.ukc43wmomn.png",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\SecretHitler.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "45678"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"UiToE32ukICBoHRZhoPcnNXF5dFOdCfLl7cZJUVycFY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 18:33:02 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ukc43wmomn"
+        },
+        {
+          "Name": "label",
+          "Value": "images/SecretHitler.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-UiToE32ukICBoHRZhoPcnNXF5dFOdCfLl7cZJUVycFY="
+        }
+      ]
+    },
+    {
+      "Route": "images/SmallBoardHoardLogo.png",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\SmallBoardHoardLogo.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1070093"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"NtM3ebQHEl/l2bMRqukVXq5YXLLFXx25rtIjVZqLp9k=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 00:02:36 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-NtM3ebQHEl/l2bMRqukVXq5YXLLFXx25rtIjVZqLp9k="
+        }
+      ]
+    },
+    {
+      "Route": "images/SmallBoardHoardLogo.ub2whezqjt.png",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\SmallBoardHoardLogo.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1070093"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"NtM3ebQHEl/l2bMRqukVXq5YXLLFXx25rtIjVZqLp9k=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 00:02:36 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ub2whezqjt"
+        },
+        {
+          "Name": "label",
+          "Value": "images/SmallBoardHoardLogo.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-NtM3ebQHEl/l2bMRqukVXq5YXLLFXx25rtIjVZqLp9k="
+        }
+      ]
+    },
+    {
+      "Route": "images/SmallBoardHoardLogo-removebg.png",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\SmallBoardHoardLogo-removebg.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "110345"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"U62ACz18F0Fuay1Ur+rzQutXczlM1t/WZ19L+A0X2RM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 00:04:49 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-U62ACz18F0Fuay1Ur+rzQutXczlM1t/WZ19L+A0X2RM="
+        }
+      ]
+    },
+    {
+      "Route": "images/SmallBoardHoardLogo-removebg.vpzy8rn09q.png",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\SmallBoardHoardLogo-removebg.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "110345"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"U62ACz18F0Fuay1Ur+rzQutXczlM1t/WZ19L+A0X2RM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 00:04:49 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "vpzy8rn09q"
+        },
+        {
+          "Name": "label",
+          "Value": "images/SmallBoardHoardLogo-removebg.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-U62ACz18F0Fuay1Ur+rzQutXczlM1t/WZ19L+A0X2RM="
+        }
+      ]
+    },
+    {
+      "Route": "images/Sorry!.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\Sorry!.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "202676"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"LbcMG6KqNOa+w8O6bdQk0OTBFkXXG6iTNJTkum6lq4w=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 12 Aug 2025 03:11:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-LbcMG6KqNOa+w8O6bdQk0OTBFkXXG6iTNJTkum6lq4w="
+        }
+      ]
+    },
+    {
+      "Route": "images/Sorry!.v50omnuj3p.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\Sorry!.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "202676"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"LbcMG6KqNOa+w8O6bdQk0OTBFkXXG6iTNJTkum6lq4w=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 12 Aug 2025 03:11:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "v50omnuj3p"
+        },
+        {
+          "Name": "label",
+          "Value": "images/Sorry!.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-LbcMG6KqNOa+w8O6bdQk0OTBFkXXG6iTNJTkum6lq4w="
+        }
+      ]
+    },
+    {
+      "Route": "images/Splendor.elu5r8z88x.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\Splendor.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "23729"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"3oolgX/e/WzF4YYFkSSxt/ViMGx294SXG0eM6/ewEu0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 18:23:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "elu5r8z88x"
+        },
+        {
+          "Name": "label",
+          "Value": "images/Splendor.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-3oolgX/e/WzF4YYFkSSxt/ViMGx294SXG0eM6/ewEu0="
+        }
+      ]
+    },
+    {
+      "Route": "images/Splendor.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\Splendor.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "23729"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"3oolgX/e/WzF4YYFkSSxt/ViMGx294SXG0eM6/ewEu0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 18:23:46 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-3oolgX/e/WzF4YYFkSSxt/ViMGx294SXG0eM6/ewEu0="
+        }
+      ]
+    },
+    {
+      "Route": "images/TCGCP.6b1yxhs4pd.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\TCGCP.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10912"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"IqB2VIf2reMsxlYgbJN18bNzXkvX5xLQvrnUc2GNdAQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 19:48:38 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "6b1yxhs4pd"
+        },
+        {
+          "Name": "label",
+          "Value": "images/TCGCP.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-IqB2VIf2reMsxlYgbJN18bNzXkvX5xLQvrnUc2GNdAQ="
+        }
+      ]
+    },
+    {
+      "Route": "images/TCGCP.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\TCGCP.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10912"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"IqB2VIf2reMsxlYgbJN18bNzXkvX5xLQvrnUc2GNdAQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 19:48:38 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-IqB2VIf2reMsxlYgbJN18bNzXkvX5xLQvrnUc2GNdAQ="
+        }
+      ]
+    },
+    {
+      "Route": "images/ticketToRide.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\ticketToRide.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "33573"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"rZ2VfLbZJksXBsqrWx7HZRkFC6Kzz+Hnee1y0r/j8RY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 18:20:47 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-rZ2VfLbZJksXBsqrWx7HZRkFC6Kzz+Hnee1y0r/j8RY="
+        }
+      ]
+    },
+    {
+      "Route": "images/ticketToRide.p5ib52wcf3.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\ticketToRide.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "33573"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"rZ2VfLbZJksXBsqrWx7HZRkFC6Kzz+Hnee1y0r/j8RY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 18:20:47 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "p5ib52wcf3"
+        },
+        {
+          "Name": "label",
+          "Value": "images/ticketToRide.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-rZ2VfLbZJksXBsqrWx7HZRkFC6Kzz+Hnee1y0r/j8RY="
+        }
+      ]
+    },
+    {
+      "Route": "images/uploads/sushi-go-20250812043055843.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\uploads\\sushi-go-20250812043055843.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "12906"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"rYtVyyAKH+hMSyHSzEIlRZ/W9Dz+Cb9Dp1Y7Y0HFc2g=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 12 Aug 2025 04:30:55 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-rYtVyyAKH+hMSyHSzEIlRZ/W9Dz+Cb9Dp1Y7Y0HFc2g="
+        }
+      ]
+    },
+    {
+      "Route": "images/uploads/sushi-go-20250812043055843.lyts58od1e.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\uploads\\sushi-go-20250812043055843.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "12906"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"rYtVyyAKH+hMSyHSzEIlRZ/W9Dz+Cb9Dp1Y7Y0HFc2g=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 12 Aug 2025 04:30:55 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "lyts58od1e"
+        },
+        {
+          "Name": "label",
+          "Value": "images/uploads/sushi-go-20250812043055843.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-rYtVyyAKH+hMSyHSzEIlRZ/W9Dz+Cb9Dp1Y7Y0HFc2g="
+        }
+      ]
+    },
+    {
+      "Route": "images/Wingspan.he98gvgcgf.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\Wingspan.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "7000"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"mc3Bp69EmDBrcF6QVEFHCgYrkxJZyYEAIaz4nxDF4O4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 18:36:26 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "he98gvgcgf"
+        },
+        {
+          "Name": "label",
+          "Value": "images/Wingspan.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-mc3Bp69EmDBrcF6QVEFHCgYrkxJZyYEAIaz4nxDF4O4="
+        }
+      ]
+    },
+    {
+      "Route": "images/Wingspan.jpg",
+      "AssetFile": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\Wingspan.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "7000"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"mc3Bp69EmDBrcF6QVEFHCgYrkxJZyYEAIaz4nxDF4O4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 10 Aug 2025 18:36:26 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-mc3Bp69EmDBrcF6QVEFHCgYrkxJZyYEAIaz4nxDF4O4="
+        }
+      ]
+    }
+  ]
+}

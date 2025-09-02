@@ -1,0 +1,110 @@
+﻿@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager Nav
+
+<nav class="navbar navbar-expand-lg board-navbar navbar-dark">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+            <img src="images/BoardHoardLogo.png" alt="Board Hoard" class="brand-logo" />
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+                <!-- Public -->
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="/games" Match="NavLinkMatch.Prefix">
+                        <i class="bi bi-grid-3x3-gap"></i> Game Shelf
+                    </NavLink>
+                </li>
+
+                <!-- When signed IN: normal links -->
+                <AuthorizeView>
+                    <Authorized>
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="/top" Match="NavLinkMatch.All">
+                                <i class="bi bi-trophy"></i> Board Lord
+                            </NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="/vault" Match="NavLinkMatch.All">
+                                <i class="bi bi-safe2"></i> Meeple Vault
+                            </NavLink>
+                        </li>
+
+                        <!-- Profile / Logout -->
+                        <li class="nav-item dropdown ms-lg-2">
+                            <a class="nav-link dropdown-toggle profile-toggle" href="#" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle"></i> Profile
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="/Account/Manage">Account</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li>
+                                    <form class="d-inline" method="post" action="/Account/Logout">
+                                        <AntiforgeryToken />
+                                        <input type="hidden" name="returnUrl" value="@GetSafeReturnUrl()" />
+                                        <button type="submit" class="nav-link btn btn-link p-0">
+                                            <i class="bi bi-box-arrow-right"></i> Log out
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    </Authorized>
+
+                    <!-- When signed OUT: show "locked" links that go to Login with returnUrl -->
+                    <NotAuthorized>
+                        <li class="nav-item">
+                            <span class="nav-link auth-required " title="Sign in to access">
+                                <i class="bi bi-lock"></i> Board Lord
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <span class="nav-link auth-required" title="Sign in to access">
+                                <i class="bi bi-lock"></i> Meeple Vault
+                            </span>
+                        </li>
+                        <li class="nav-item ms-lg-2">
+                            <a class="btn btn-accent" href="@GetLoginUrl()">
+                                <i class="bi bi-box-arrow-in-right"></i> Sign in
+                            </a>
+                        </li>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+@code {
+    private string GetCurrentPath()
+    {
+        var path = Nav.ToBaseRelativePath(Nav.Uri);
+        return string.IsNullOrEmpty(path) || path == "/" ? "/" : $"/{path.TrimStart('/')}";
+    }
+
+    private string GetSafeReturnUrl()
+    {
+        var currentPath = GetCurrentPath();
+        // Only return specific safe paths, default to home
+        return currentPath switch
+        {
+            "/games" => "/games",
+            "/top" => "/",  // Redirect to home since they'll be logged out
+            "/vault" => "/", // Redirect to home since they'll be logged out
+            _ => "/"
+        };
+    }
+
+    private string GetLoginUrl()
+    {
+        var currentPath = GetCurrentPath();
+        return $"/Account/Login?returnUrl={Uri.EscapeDataString(currentPath)}";
+    }
+}

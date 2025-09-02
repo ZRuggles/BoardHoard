@@ -1,0 +1,133 @@
+﻿@using Boardgames.Shared
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Forms
+@inject BoardHoard.Services.IImageService ImageSvc
+
+<EditForm Model="Model"
+          OnValidSubmit="HandleSubmit"
+          FormName="@FormName">
+    <DataAnnotationsValidator />
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Title</label>
+            <InputText class="form-control" @bind-Value="Model.Title" />
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Year</label>
+            <InputNumber class="form-control" @bind-Value="Model.Year" />
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Age Rating</label>
+            <InputNumber class="form-control" @bind-Value="Model.ageRating" />
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Min Players</label>
+            <InputNumber class="form-control" @bind-Value="Model.MinPlayers" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Max Players</label>
+            <InputNumber class="form-control" @bind-Value="Model.MaxPlayers" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Image URL</label>
+            <div class="input-group">
+                <InputText class="form-control" @bind-Value="Model.ImageUrl" />
+                <label class="btn btn-outline-light">
+                    <i class="bi bi-upload"></i> Upload
+                    <InputFile OnChange="OnFileSelected" accept="image/*" class="d-none" />
+                </label>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+            {
+                <div class="mt-2">
+                    <img src="@Model.ImageUrl" alt="preview" style="max-width:160px; border-radius:8px; border:1px solid rgba(255,255,255,.1)" />
+                </div>
+            }
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Publisher</label>
+            <InputText class="form-control" @bind-Value="Model.Publisher" />
+        </div>
+
+        <div class="col-12">
+            <label class="form-label">Description</label>
+            <InputTextArea class="form-control" rows="3" @bind-Value="Model.Description" />
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Rarity (0–100)</label>
+            <InputNumber class="form-control" @bind-Value="Model.RarityScore" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Sentimental (0–100)</label>
+            <InputNumber class="form-control" @bind-Value="Model.SentimentalScore" />
+        </div>
+        @if (Kind == "card")
+        {
+            <div class="col-md-4">
+                <label class="form-label">Card Count <span class="text-muted">(optional)</span></label>
+                <InputNumber class="form-control" @bind-Value="CardCountProxy" />
+                <div class="form-text">Leave blank if unknown.</div>
+            </div>
+        }
+
+
+        <div class="col-12 d-flex gap-2 mt-2">
+            <button class="btn btn-primary" type="submit" disabled="@Saving">@SubmitText</button>
+            @if (ShowCancel)
+            {
+                <button class="btn btn-outline-light" type="button" @onclick="OnCancel">Cancel</button>
+            }
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public IGame Model { get; set; } = default!;
+    [Parameter] public string Kind { get; set; } = "board";
+    [Parameter] public string SubmitText { get; set; } = "Save";
+    [Parameter] public bool Saving { get; set; }
+    [Parameter] public EventCallback OnSubmit { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+    [Parameter] public bool ShowCancel { get; set; } = true;
+    [Parameter] public string FormName { get; set; } = "game-form";
+
+    // NEW: nullable proxy so the field can be blank without validation errors
+    private long? CardCountProxy { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (Kind == "card" && Model is CardGame cg)
+        {
+            CardCountProxy = cg.cardCount == 0 ? (long?)null : cg.cardCount;
+        }
+        else
+        {
+            CardCountProxy = null;
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        // copy proxy back into the model before submit
+        if (Kind == "card" && Model is CardGame cg)
+        {
+            cg.cardCount = CardCountProxy ?? 0;
+        }
+        await OnSubmit.InvokeAsync();
+    }
+
+    private async Task OnFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file is null) return;
+        var url = await ImageSvc.UploadAsync(file, Model?.Title);
+        if (!string.IsNullOrWhiteSpace(url))
+            Model.ImageUrl = url; // relative URL served by Blazor app
+    }
+}

@@ -1,0 +1,113 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\BoardHoard.bundle.scp.css",
+      "PackagePath": "staticwebassets\\BoardHoard.6ytha9c65g.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\app.css",
+      "PackagePath": "staticwebassets\\app.css"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\BoardHoardLogo.png",
+      "PackagePath": "staticwebassets\\images\\BoardHoardLogo.png"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\CamelUp.png",
+      "PackagePath": "staticwebassets\\images\\CamelUp.png"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\CardsAgainstHumanity.png",
+      "PackagePath": "staticwebassets\\images\\CardsAgainstHumanity.png"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\Catan.jpg",
+      "PackagePath": "staticwebassets\\images\\Catan.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\ChampionsOfMidgard.jpg",
+      "PackagePath": "staticwebassets\\images\\ChampionsOfMidgard.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\DutchBlitz.jpg",
+      "PackagePath": "staticwebassets\\images\\DutchBlitz.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\GameOfLife.jpg",
+      "PackagePath": "staticwebassets\\images\\GameOfLife.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\HuesAndCues.jpg",
+      "PackagePath": "staticwebassets\\images\\HuesAndCues.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\LordsOfWaterdeep.jpg",
+      "PackagePath": "staticwebassets\\images\\LordsOfWaterdeep.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\Monopoly.jpg",
+      "PackagePath": "staticwebassets\\images\\Monopoly.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\NutsAboutMutts.jpg",
+      "PackagePath": "staticwebassets\\images\\NutsAboutMutts.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\SecretHitler.png",
+      "PackagePath": "staticwebassets\\images\\SecretHitler.png"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\SmallBoardHoardLogo-removebg.png",
+      "PackagePath": "staticwebassets\\images\\SmallBoardHoardLogo-removebg.png"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\SmallBoardHoardLogo.png",
+      "PackagePath": "staticwebassets\\images\\SmallBoardHoardLogo.png"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\Sorry!.jpg",
+      "PackagePath": "staticwebassets\\images\\Sorry!.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\Splendor.jpg",
+      "PackagePath": "staticwebassets\\images\\Splendor.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\TCGCP.jpg",
+      "PackagePath": "staticwebassets\\images\\TCGCP.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\Wingspan.jpg",
+      "PackagePath": "staticwebassets\\images\\Wingspan.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\ticketToRide.jpg",
+      "PackagePath": "staticwebassets\\images\\ticketToRide.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Alecr\\source\\repos\\Board Hoard But Better\\BoardHoard\\wwwroot\\images\\uploads\\sushi-go-20250812043055843.jpg",
+      "PackagePath": "staticwebassets\\images\\uploads\\sushi-go-20250812043055843.jpg"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.BoardHoard.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.BoardHoard.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.BoardHoard.props",
+      "PackagePath": "build\\BoardHoard.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.BoardHoard.props",
+      "PackagePath": "buildMultiTargeting\\BoardHoard.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.BoardHoard.props",
+      "PackagePath": "buildTransitive\\BoardHoard.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

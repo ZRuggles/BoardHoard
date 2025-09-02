@@ -1,0 +1,191 @@
+﻿@page "/Account/Register"
+
+@using System.ComponentModel.DataAnnotations
+@using System.Text
+@using System.Text.Encodings.Web
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.WebUtilities
+@using Microsoft.AspNetCore.Components.Forms
+@using BoardHoard.Data
+
+@inject UserManager<ApplicationUser> UserManager
+@inject IUserStore<ApplicationUser> UserStore
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IEmailSender<ApplicationUser> EmailSender
+@inject ILogger<Register> Logger
+@inject NavigationManager NavigationManager
+@inject IdentityRedirectManager RedirectManager
+
+<PageTitle>Register</PageTitle>
+
+<div class="auth-wrap container py-5">
+    <div class="row justify-content-center g-4">
+        <div class="col-12 col-lg-5">
+            <section class="auth-card">
+                <div class="auth-header">
+                    <div class="logo-row">
+                        <img src="/images/BoardHoardLogo.png" alt="Board Hoard" class="auth-logo" />
+                        <h1 class="auth-title">Create your account</h1>
+                    </div>
+                    <p class="auth-subtitle">Join the hoard to unlock Board Lord and the Meeple Vault.</p>
+                </div>
+
+                <StatusMessage Message="@Message" />
+
+                <EditForm Model="Input" method="post" OnValidSubmit="RegisterUser" FormName="register">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="text-danger" role="alert" />
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <InputText id="email" class="form-control" @bind-Value="Input.Email" autocomplete="username" aria-required="true" />
+                        <ValidationMessage For="() => Input.Email" class="text-danger small" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <InputText id="password" type="password" class="form-control" @bind-Value="Input.Password" autocomplete="new-password" aria-required="true" />
+                        <ValidationMessage For="() => Input.Password" class="text-danger small" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="confirm" class="form-label">Confirm Password</label>
+                        <InputText id="confirm" type="password" class="form-control" @bind-Value="Input.ConfirmPassword" autocomplete="new-password" aria-required="true" />
+                        <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger small" />
+                    </div>
+
+                    <div class="pw-hints">
+                        <div class="hint-title"><i class="bi bi-shield-lock"></i> Password requirements</div>
+                        <ul class="hint-list">
+                            <li>At least 10 characters</li>
+                            <li>At least one uppercase letter</li>
+                            <li>At least one number</li>
+                            <li>At least one symbol</li>
+                        </ul>
+                    </div>
+
+                    <button type="submit" class="w-100 btn btn-primary mb-2">Create account</button>
+
+                    <div class="auth-links">
+                        <span>Already have an account?</span>
+                        <a class="link" href="@NavigationManager.GetUriWithQueryParameters("/Account/Login",
+                            new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl })">
+                            Sign in
+                        </a>
+                    </div>
+                </EditForm>
+            </section>
+        </div>
+
+        <div class="col-12 col-lg-5">
+            <section class="auth-side">
+                <div class="auth-side-card">
+                    <h3 class="side-title"><i class="bi bi-box-arrow-in-right"></i> Register with a provider</h3>
+                    <p class="side-copy">
+                        Prefer a connected account? Use one of your existing providers below.
+                    </p>
+                    <div class="auth-divider"><span>OR</span></div>
+                    <ExternalLoginPicker />
+                </div>
+
+                <div class="auth-perks">
+                    <div class="perk"><i class="bi bi-trophy"></i> Compete for Board Lord</div>
+                    <div class="perk"><i class="bi bi-safe2"></i> Access the Meeple Vault</div>
+                    <div class="perk"><i class="bi bi-grid-3x3-gap"></i> Build your game shelf</div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+@code {
+    private IEnumerable<IdentityError>? identityErrors;
+
+    [SupplyParameterFromForm]
+    private InputModel Input { get; set; } = new();
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    private string? Message =>
+        identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(e => e.Description))}";
+
+    public async Task RegisterUser()
+    {
+        var user = CreateUser();
+
+        await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+        var emailStore = GetEmailStore();
+        await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+        var result = await UserManager.CreateAsync(user, Input.Password);
+        if (!result.Succeeded)
+        {
+            identityErrors = result.Errors;
+            return;
+        }
+
+        Logger.LogInformation("User created a new account with password.");
+
+        var userId = await UserManager.GetUserIdAsync(user);
+        var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+        var callbackUrl = NavigationManager.GetUriWithQueryParameters(
+            NavigationManager.ToAbsoluteUri("Account/ConfirmEmail").AbsoluteUri,
+            new Dictionary<string, object?>
+                {
+                    ["userId"] = userId,
+                    ["code"] = code,
+                    ["returnUrl"] = ReturnUrl
+                });
+
+        await EmailSender.SendConfirmationLinkAsync(user, Input.Email, HtmlEncoder.Default.Encode(callbackUrl));
+
+        if (UserManager.Options.SignIn.RequireConfirmedAccount)
+        {
+            RedirectManager.RedirectTo("Account/RegisterConfirmation",
+                new Dictionary<string, object?>
+                    {
+                        ["email"] = Input.Email,
+                        ["returnUrl"] = ReturnUrl
+                    });
+            return;
+        }
+
+        await SignInManager.SignInAsync(user, isPersistent: false);
+        RedirectManager.RedirectTo(ReturnUrl);
+    }
+
+    private ApplicationUser CreateUser()
+    {
+        try { return Activator.CreateInstance<ApplicationUser>(); }
+        catch
+        {
+            throw new InvalidOperationException(
+                $"Can't create an instance of '{nameof(ApplicationUser)}'. Ensure it has a parameterless constructor and is not abstract.");
+        }
+    }
+
+    private IUserEmailStore<ApplicationUser> GetEmailStore()
+    {
+        if (!UserManager.SupportsUserEmail)
+            throw new NotSupportedException("The default UI requires a user store with email support.");
+        return (IUserEmailStore<ApplicationUser>)UserStore;
+    }
+
+    // Keep this INSIDE the @code block so it's private-scoped to the component
+    private sealed class InputModel
+    {
+        [Required, EmailAddress]
+        public string Email { get; set; } = "";
+
+        [Required, StringLength(100, ErrorMessage = "The {0} must be between {2} and {1} characters.", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        public string Password { get; set; } = "";
+
+        [DataType(DataType.Password)]
+        [Compare(nameof(Password), ErrorMessage = "The password and confirmation password do not match.")]
+        public string ConfirmPassword { get; set; } = "";
+    }
+}

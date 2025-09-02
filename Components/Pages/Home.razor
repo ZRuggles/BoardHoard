@@ -1,0 +1,128 @@
+﻿@page "/"
+@using Boardgames.Shared
+@inject BoardHoard.Services.IBoardGameService BoardSvc
+@inject BoardHoard.Services.ICardGameService CardSvc
+@inject NavigationManager Nav
+
+<PageTitle>Board Hoard</PageTitle>
+
+<section class="home-hero">
+    <div class="copy">
+        <h1>Board Hoard</h1>
+        <p class="tagline">Track the games you love. Showcase the ones you treasure.</p>
+
+        <div class="cta">
+            <a class="btn btn-primary btn-lg" href="/games">
+                <i class="bi bi-collection"></i> Browse Games
+            </a>
+            <AuthorizeView>
+                <Authorized>
+                    <a class="btn btn-outline-light btn-lg" href="/vault">
+                        <i class="bi bi-shield-lock"></i> Meeple Vault
+                    </a>
+                    <a class="btn btn-outline-light btn-lg" href="/top">
+                        <i class="bi bi-trophy"></i> Board Lord
+                    </a>
+                </Authorized>
+            </AuthorizeView>
+
+        </div>
+
+        <div class="stats">
+            <div class="chip"><i class="bi bi-box-seam"></i> @totalCount total</div>
+            <div class="chip"><i class="bi bi-grid-3x3-gap"></i> @boardCount board</div>
+            <div class="chip"><i class="bi bi-suit-club-fill"></i> @cardCount card</div>
+            @if (totalCount > 0)
+            {
+                <div class="chip"><i class="bi bi-hourglass-split"></i> @oldestYear–@newestYear</div>
+            }
+        </div>
+    </div>
+
+    <div class="art">
+        <img src="/images/SmallBoardHoardLogo-removebg.png" alt="Board Hoard mascot" />
+    </div>
+</section>
+
+@if (featured is null)
+{
+    <div class="loading">Loading…</div>
+}
+else if (featured.Count > 0)
+{
+    <section class="featured">
+        <h2>Featured Picks</h2>
+        <div class="featured-grid">
+            @foreach (var g in featured)
+            {
+                var kind = g is BoardGame ? "board" : "card";
+                <div class="feat-card">
+                    <img src="@g.ImageUrl" alt="@g.Title cover" />
+                    <div class="info">
+                        <h4>@g.Title</h4>
+                        <p class="meta">@g.Year • @g.MinPlayers–@g.MaxPlayers</p>
+                        <div class="rating" title="@($"{g.AverageRating:0.0} stars • {(g.Ratings?.Count ?? 0)} ratings")">
+                            @foreach (var cls in GetStarClasses(g.AverageRating))
+                            {
+                                <i class="@cls"></i>
+                            }
+                            <span class="count">(@(g.Ratings?.Count ?? 0))</span>
+                        </div>
+                    </div>
+                    <a class="stretched-link" href="@($"/game/{kind}/{g.Id}")"></a>
+                </div>
+            }
+        </div>
+    </section>
+}
+
+@code {
+    private List<IGame>? featured;
+    private int boardCount, cardCount, totalCount, oldestYear, newestYear;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var boards = await BoardSvc.GetAllAsync();
+        var cards  = await CardSvc.GetAllAsync();
+
+        boardCount = boards.Count;
+        cardCount  = cards.Count;
+        totalCount = boardCount + cardCount;
+
+        var all = boards.Cast<IGame>().Concat(cards.Cast<IGame>()).ToList();
+
+        if (all.Count > 0)
+        {
+            oldestYear = all.Min(g => g.Year);
+            newestYear = all.Max(g => g.Year);
+
+            // pick 6 by rating, then recency
+            featured = all.OrderByDescending(g => g.AverageRating)
+                          .ThenByDescending(g => g.Year)
+                          .ThenBy(g => g.Title)
+                          .Take(5)
+                          .ToList();
+        }
+        else
+        {
+            featured = new();
+        }
+    }
+
+    private static IEnumerable<string> GetStarClasses(double rating)
+    {
+        var stars = new List<string>(5);
+        var full = (int)Math.Floor(rating);
+        var frac = rating - full;
+        var hasHalf = frac >= 0.25 && frac < 0.75;
+        var bump = frac >= 0.75 ? 1 : 0;
+
+        for (int i = 0; i < 5; i++)
+        {
+            if (i < full + bump) stars.Add("bi bi-star-fill");
+            else if (hasHalf && i == full) stars.Add("bi bi-star-half");
+            else stars.Add("bi bi-star");
+        }
+        return stars;
+    }
+}

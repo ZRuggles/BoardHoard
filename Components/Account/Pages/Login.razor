@@ -1,0 +1,139 @@
+﻿@page "/Account/Login"
+
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Identity
+@using BoardHoard.Data
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject ILogger<Login> Logger
+@inject NavigationManager NavigationManager
+@inject IdentityRedirectManager RedirectManager
+
+<PageTitle>Log in</PageTitle>
+
+<div class="auth-wrap container py-5">
+    <div class="row justify-content-center g-4">
+        <!-- Left: Login Card -->
+        <div class="col-12 col-lg-5">
+            <section class="auth-card">
+                <div class="auth-header">
+                    <div class="logo-row">
+                        <img src="/images/BoardHoardLogo.png" alt="Board Hoard" class="auth-logo" />
+                        <h1 class="auth-title">Welcome back</h1>
+                    </div>
+                    <p class="auth-subtitle">Sign in to your Board Hoard account.</p>
+                </div>
+
+                <StatusMessage Message="@errorMessage" />
+
+                <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="text-danger" role="alert" />
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <InputText id="email" @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
+                        <ValidationMessage For="() => Input.Email" class="text-danger small" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <InputText id="password" type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
+                        <ValidationMessage For="() => Input.Password" class="text-danger small" />
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <InputCheckbox id="remember" @bind-Value="Input.RememberMe" class="form-check-input" />
+                        <label class="form-check-label" for="remember">Remember me</label>
+                    </div>
+
+                    <button type="submit" class="w-100 btn btn-primary mb-2">Log in</button>
+
+                    <div class="auth-links">
+                        <a class="link" href="/Account/ForgotPassword">Forgot your password?</a>
+                        <span class="sep">•</span>
+                        <a class="link" href="@(NavigationManager.GetUriWithQueryParameters("/Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register</a>
+                        <span class="sep">•</span>
+                        <a class="link" href="/Account/ResendEmailConfirmation">Resend confirmation</a>
+                    </div>
+                </EditForm>
+            </section>
+        </div>
+
+        <!-- Right: Brand/External Providers -->
+        <div class="col-12 col-lg-5">
+            <section class="auth-side">
+                <div class="auth-side-card">
+                    <h3 class="side-title"><i class="bi bi-shield-lock"></i> Secure sign in</h3>
+                    <p class="side-copy">
+                        Your data stays safe behind our meeple-grade vault. Use your email/password
+                        or one of your connected providers below.
+                    </p>
+                    <div class="auth-divider"><span>OR</span></div>
+                    <ExternalLoginPicker />
+                </div>
+
+                <div class="auth-perks">
+                    <div class="perk"><i class="bi bi-trophy"></i> Track your top games</div>
+                    <div class="perk"><i class="bi bi-safe2"></i> Access the Meeple Vault</div>
+                    <div class="perk"><i class="bi bi-grid-3x3-gap"></i> Curate your shelf</div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string? errorMessage;
+
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm] private InputModel Input { get; set; } = new();
+
+    [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (HttpMethods.IsGet(HttpContext.Request.Method))
+        {
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+        }
+    }
+
+    public async Task LoginUser()
+    {
+        var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+        if (result.Succeeded)
+        {
+            Logger.LogInformation("User logged in.");
+            RedirectManager.RedirectTo(ReturnUrl);
+        }
+        else if (result.RequiresTwoFactor)
+        {
+            RedirectManager.RedirectTo(
+                "Account/LoginWith2fa",
+                new Dictionary<string, object?>
+                    {
+                        ["returnUrl"] = ReturnUrl,
+                        ["rememberMe"] = Input.RememberMe
+                    });
+        }
+        else if (result.IsLockedOut)
+        {
+            Logger.LogWarning("User account locked out.");
+            RedirectManager.RedirectTo("Account/Lockout");
+        }
+        else
+        {
+            errorMessage = "Error: Invalid login attempt.";
+        }
+    }
+
+    private sealed class InputModel
+    {
+        [Required, EmailAddress] public string Email { get; set; } = "";
+        [Required, DataType(DataType.Password)] public string Password { get; set; } = "";
+        [Display(Name = "Remember me?")] public bool RememberMe { get; set; }
+    }
+}

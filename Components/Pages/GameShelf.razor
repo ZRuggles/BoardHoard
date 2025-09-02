@@ -1,0 +1,56 @@
+﻿@page "/games"
+@using Boardgames.Shared
+@inject BoardHoard.Services.IBoardGameService BoardSvc
+@inject BoardHoard.Services.ICardGameService CardSvc
+@using BoardHoard.Components.Layout
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <h1 class="page-title">Game Shelf</h1>
+
+    <AuthorizeView Roles="Admin">
+        <Authorized>
+            <a class="btn btn-primary" href="/game/new"><i class="bi bi-plus-lg"></i> Add Game</a>
+        </Authorized>
+    </AuthorizeView>
+</div>
+@if (boardGames is null || cardGames is null)
+{
+    <div class="loading">Loading…</div>
+}
+else
+{
+
+    <GameCarousel Title="All Games"
+                  CarouselId="carousel-all"
+                  Items="allGames"
+                  CardsPerSlide="CardsPerSlide"
+                  ShowDetails="true" />
+
+    <GameCarousel Title="Board Games"
+                  CarouselId="carousel-board"
+                  Items="boardGames.Cast<IGame>()"
+                  CardsPerSlide="CardsPerSlide" />
+
+    <GameCarousel Title="Card Games"
+                  CarouselId="carousel-card"
+                  Items="cardGames.Cast<IGame>()"
+                  CardsPerSlide="CardsPerSlide" />
+}
+
+@code {
+    private const int CardsPerSlide = 8;
+
+    private List<BoardGame>? boardGames;
+    private List<CardGame>? cardGames;
+    private List<IGame> allGames = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        boardGames = await BoardSvc.GetAllAsync();
+        cardGames = await CardSvc.GetAllAsync();
+
+        allGames = boardGames.Cast<IGame>()
+                             .Concat(cardGames.Cast<IGame>())
+                             .ToList();
+    }
+}

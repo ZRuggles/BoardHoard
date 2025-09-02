@@ -1,0 +1,271 @@
+﻿@page "/game/{kind}/{id:int}"
+@using Boardgames.Shared
+@inject BoardHoard.Services.IBoardGameService BoardSvc
+@inject BoardHoard.Services.ICardGameService CardSvc
+@inject IJSRuntime JS
+@inject NavigationManager Nav
+@rendermode InteractiveServer
+
+
+@if (game is null)
+{
+    <div class="loading">Loading…</div>
+}
+else
+{
+    <div class="game-details">
+        <div class="media">
+            <img src="@game.ImageUrl" alt="@game.Title cover" />
+        </div>
+
+        <div class="content">
+            @if (!isEditing)
+            {
+                <h1>@game.Title</h1>
+                <p class="meta">@game.Year • @game.MinPlayers–@game.MaxPlayers players</p>
+
+                <div class="rating">
+                    @foreach (var cls in GetStarClasses(game.AverageRating))
+                    {
+                        <i class="@cls"></i>
+                    }
+                    <span class="count">(@(game.Ratings?.Count ?? 0))</span>
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(game.Publisher))
+                {
+                    <p class="publisher"><strong>Publisher:</strong> @game.Publisher</p>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(game.Description))
+                {
+                    <p class="desc">@game.Description</p>
+                }
+
+                <div class="badges">
+                    <span class="badge-rare" title="Rarity">@game.RarityScore</span>
+                    <span class="badge-sent" title="Sentimental">@game.SentimentalScore</span>
+                </div>
+
+                <AuthorizeView Roles="Admin">
+                    <Authorized>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary" @onclick="EnterEdit"><i class="bi bi-pencil-square"></i> Edit</button>
+                            <button class="btn btn-outline-danger" @onclick="DeleteAsync"><i class="bi bi-trash"></i> Delete</button>
+                        </div>
+                    </Authorized>
+                </AuthorizeView>
+            }
+            else
+            {
+                <EditForm Model="editModel" OnValidSubmit="SaveAsync" FormName="@($"edit-{kind}-{id}")">
+                    <DataAnnotationsValidator />
+
+                    <div class="row g-3">
+                        <div class="col-md-7">
+                            <label class="form-label">Title</label>
+                            <InputText class="form-control" @bind-Value="editModel!.Title" />
+                        </div>
+
+                        <div class="col-md-2">
+                            <label class="form-label">Year</label>
+                            <InputNumber class="form-control" @bind-Value="editModel!.Year" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Age Rating</label>
+                            <InputNumber class="form-control" @bind-Value="editModel!.ageRating" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Min Players</label>
+                            <InputNumber class="form-control" @bind-Value="editModel!.MinPlayers" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Max Players</label>
+                            <InputNumber class="form-control" @bind-Value="editModel!.MaxPlayers" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Image URL</label>
+                            <InputText class="form-control" @bind-Value="editModel!.ImageUrl" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Publisher</label>
+                            <InputText class="form-control" @bind-Value="editModel!.Publisher" />
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Description</label>
+                            <InputTextArea class="form-control" rows="3" @bind-Value="editModel!.Description" />
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Rarity (0–100)</label>
+                            <InputNumber class="form-control" @bind-Value="editModel!.RarityScore" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Sentimental (0–100)</label>
+                            <InputNumber class="form-control" @bind-Value="editModel!.SentimentalScore" />
+                        </div>
+
+                        @if (kind == "card")
+                        {
+                            <div class="col-md-3">
+                                <label class="form-label">Card Count</label>
+                                <InputNumber class="form-control" @bind-Value="((CardGame)editModel!).cardCount" />
+                            </div>
+                        }
+
+                        <div class="col-12 d-flex gap-2 mt-2">
+                            <button class="btn btn-primary" type="submit" disabled="@saving">
+                                <i class="bi bi-check2"></i> Save
+                            </button>
+                            <button class="btn btn-outline-light" type="button" @onclick="CancelEdit" disabled="@saving">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </EditForm>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string kind { get; set; } = "";
+    [Parameter] public int id { get; set; }
+
+    private IGame? game;
+    private IGame? editModel;
+    private bool isEditing = false;
+    private bool saving = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var k = (kind ?? "").ToLowerInvariant();
+
+        if (k == "board")
+        {
+            game = await BoardSvc.GetByIdAsync(id);
+            return;
+        }
+        if (k == "card")
+        {
+            game = await CardSvc.GetByIdAsync(id);
+            return;
+        }
+
+        var b = await BoardSvc.GetByIdAsync(id);
+        if (b != null) { game = b; return; }
+        game = await CardSvc.GetByIdAsync(id);
+    }
+
+    private void EnterEdit()
+    {
+        if (game is null) return;
+        // clone into a new instance so Cancel doesn't mutate the original
+        editModel = kind == "card"
+            ? Clone((CardGame)game)
+            : Clone((BoardGame)game);
+        isEditing = true;
+    }
+
+    private void CancelEdit()
+    {
+        isEditing = false;
+        editModel = null;
+    }
+
+    private async Task SaveAsync()
+    {
+        if (editModel is null) return;
+        saving = true;
+        try
+        {
+            bool ok = false;
+            if (kind == "card")
+            {
+                ok = await CardSvc.UpdateAsync(id, (CardGame)editModel);
+            }
+            else
+            {
+                ok = await BoardSvc.UpdateAsync(id, (BoardGame)editModel);
+            }
+
+            if (ok)
+            {
+                // refresh view state with the saved model
+                game = kind == "card" ? (IGame)Clone((CardGame)editModel) : Clone((BoardGame)editModel);
+                isEditing = false;
+                editModel = null;
+                StateHasChanged();
+            }
+        }
+        finally { saving = false; }
+    }
+
+    private async Task DeleteAsync()
+    {
+        var ok = await JS.InvokeAsync<bool>("confirm", $"Delete '{game?.Title}'?");
+        if (!ok || game is null) return;
+
+        bool success = kind == "card"
+            ? await CardSvc.DeleteAsync(id)
+            : await BoardSvc.DeleteAsync(id);
+
+        if (success) Nav.NavigateTo("/games");
+    }
+
+    // shallow clones (enough for our simple models)
+    private static BoardGame Clone(BoardGame g) => new()
+        {
+            Id = g.Id,
+            Title = g.Title,
+            Year = g.Year,
+            MinPlayers = g.MinPlayers,
+            MaxPlayers = g.MaxPlayers,
+            ImageUrl = g.ImageUrl,
+            Publisher = g.Publisher,
+            Description = g.Description,
+            ageRating = g.ageRating,
+            Ratings = g.Ratings?.ToList() ?? new(),
+            RarityScore = g.RarityScore,
+            SentimentalScore = g.SentimentalScore
+        };
+
+    private static CardGame Clone(CardGame g) => new()
+        {
+            Id = g.Id,
+            Title = g.Title,
+            Year = g.Year,
+            MinPlayers = g.MinPlayers,
+            MaxPlayers = g.MaxPlayers,
+            ImageUrl = g.ImageUrl,
+            Publisher = g.Publisher,
+            Description = g.Description,
+            ageRating = g.ageRating,
+            Ratings = g.Ratings?.ToList() ?? new(),
+            RarityScore = g.RarityScore,
+            SentimentalScore = g.SentimentalScore,
+            cardCount = g.cardCount
+        };
+
+    private static IEnumerable<string> GetStarClasses(double rating)
+    {
+        var stars = new List<string>(5);
+        var full = (int)Math.Floor(rating);
+        var frac = rating - full;
+        var hasHalf = frac >= 0.25 && frac < 0.75;
+        var bump = frac >= 0.75 ? 1 : 0;
+
+        for (int i = 0; i < 5; i++)
+        {
+            if (i < full + bump) stars.Add("bi bi-star-fill");
+            else if (hasHalf && i == full) stars.Add("bi bi-star-half");
+            else stars.Add("bi bi-star");
+        }
+        return stars;
+    }
+}

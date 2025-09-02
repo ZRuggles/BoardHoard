@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "BoardHoard.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "..\\BHAPI\\BoardHoardAPI.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

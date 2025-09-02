@@ -1,0 +1,218 @@
+﻿.boardlord-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); /* prevents overflow pushing */
+    gap: 1rem;
+    align-items: stretch;
+    margin-bottom: 1rem; /* space before "Also Great" */
+    /* REMOVE max-height */
+}
+
+
+/* HERO */
+.hero-card {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--bh-surface);
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 10px 28px rgba(0,0,0,.25);
+    min-height: 360px;
+    max-height: 480px; /* Ensure it doesn't get too tall on larger screens */
+}
+
+    .hero-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: saturate(1.05);
+    }
+
+    .hero-card .overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,.55) 10%, rgba(0,0,0,0) 60%);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 1rem 1.25rem;
+    }
+
+    .hero-card .rank {
+        display: inline-block;
+        padding: .15rem .5rem;
+        border-radius: 999px;
+        background: rgba(0,0,0,.55);
+        border: 1px solid rgba(255,255,255,.18);
+        color: #ff9c43; /* accent for #1 */
+        font-weight: 800;
+        margin-bottom: .35rem;
+    }
+
+    .hero-card h2 {
+        margin: 0;
+        font-weight: 800;
+        font-size: clamp(1.4rem, 2.6vw, 2rem);
+    }
+
+    .hero-card .meta {
+        margin: .15rem 0 0;
+        opacity: .9;
+    }
+
+/* MINIS (2x2 grid that rotates with fade) */
+.mini-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: 1fr;
+    gap: 1rem;
+    min-height: 360px;
+}
+
+.mini-card {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--bh-surface);
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 6px 20px rgba(0,0,0,.18);
+}
+
+    .mini-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .mini-card .overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,.6), rgba(0,0,0,0) 60%);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: .65rem .8rem;
+    }
+
+    .mini-card .rank {
+        display: inline-block;
+        padding: .1rem .45rem;
+        border-radius: 999px;
+        background: rgba(0,0,0,.55);
+        border: 1px solid rgba(255,255,255,.16);
+        color: var(--bh-accent);
+        font-weight: 800;
+        margin-bottom: .25rem;
+    }
+
+    .mini-card h3 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 700;
+    }
+
+/* Fade animation when rotating minis */
+.is-fading .mini-card {
+    animation: boardlord-fade .25s ease-in-out;
+}
+
+@keyframes boardlord-fade {
+    from {
+        opacity: .25;
+        transform: scale(.995);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .boardlord-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mini-grid {
+        min-height: auto;
+    }
+
+    .hero-card {
+        min-height: 320px;
+        margin-bottom: .5rem;
+    }
+}
+
+
+
+.also-great {
+    margin-top: 1.25rem;
+}
+
+    .also-great h2 {
+        margin: .25rem 0 .6rem;
+        font-weight: 800;
+    }
+
+.others-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
+    gap: 1rem;
+}
+
+.og-card {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #1b1b1b;
+    border: 1px solid rgba(255,255,255,.1);
+    box-shadow: 0 6px 18px rgba(0,0,0,.18);
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+    .og-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 26px rgba(0,0,0,.22);
+    }
+
+    .og-card img {
+        display: block;
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+    }
+
+    .og-card .info {
+        padding: .7rem .85rem 1rem;
+    }
+
+    .og-card h4 {
+        margin: 0 0 .2rem;
+        font-size: 1.02rem;
+    }
+
+    .og-card .meta {
+        margin: 0 0 .25rem;
+        opacity: .8;
+        font-size: .9rem;
+    }
+
+    .og-card .rating {
+        display: inline-flex;
+        align-items: center;
+        gap: .25rem;
+    }
+
+        .og-card .rating .bi-star-fill, .og-card .rating .bi-star-half {
+            color: #ffb74d;
+        }
+
+        .og-card .rating .bi-star {
+            color: rgba(255,255,255,.35);
+        }
+
+        .og-card .rating .count {
+            font-size: .85rem;
+            opacity: .8;
+            margin-left: .15rem;
+        }

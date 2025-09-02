@@ -1,0 +1,74 @@
+﻿@page "/game/new"
+@using Boardgames.Shared
+@using BoardHoard.Components.Layout
+@inject BoardHoard.Services.IBoardGameService BoardSvc
+@inject BoardHoard.Services.ICardGameService CardSvc
+@inject NavigationManager Nav
+@rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+
+
+<h1 class="page-title">Add a Game</h1>
+
+<div class="mb-3">
+  <label class="form-label">Type</label>
+  <select class="form-select w-auto" @bind="kind" @bind:after="OnKindChanged">
+    <option value="board">Board Game</option>
+    <option value="card">Card Game</option>
+  </select>
+</div>
+
+<GameForm @key="model"         
+          Model="model"
+          Kind="@kind"
+          SubmitText="Add"
+          Saving="@saving"
+          ShowCancel="true"
+          FormName="create-game-form"
+          OnSubmit="CreateAsync" />
+
+@code {
+  private string kind = "board";
+
+  // keep separate drafts so switching types doesn’t wipe inputs
+  private readonly BoardGame _boardDraft = new() { Year = DateTime.Now.Year, MinPlayers = 2, MaxPlayers = 4, ageRating = 8 };
+  private readonly CardGame  _cardDraft  = new() { Year = DateTime.Now.Year, MinPlayers = 2, MaxPlayers = 4, ageRating = 8 };
+
+  private IGame model = default!;
+  private bool saving;
+
+  protected override void OnInitialized()
+  {
+    model = _boardDraft; // default to board
+  }
+
+  private void OnKindChanged()
+  {
+    model = kind == "card" ? _cardDraft : _boardDraft;
+    StateHasChanged();
+  }
+
+  private async Task CreateAsync()
+  {
+    saving = true;
+    try
+    {
+      if (model is CardGame cg)
+      {
+        var created = await CardSvc.CreateAsync(cg);
+        if (created != null) Nav.NavigateTo($"/game/card/{created.Id}");
+      }
+      else if (model is BoardGame bg)
+      {
+        var created = await BoardSvc.CreateAsync(bg);
+        if (created != null) Nav.NavigateTo($"/game/board/{created.Id}");
+      }
+      else
+      {
+        // should never happen
+        await Task.Yield();
+      }
+    }
+    finally { saving = false; }
+  }
+}

@@ -1,0 +1,198 @@
+﻿@page "/top"
+@using Boardgames.Shared
+@inject BoardHoard.Services.IBoardGameService BoardSvc
+@inject BoardHoard.Services.ICardGameService CardSvc
+@implements IDisposable
+@rendermode InteractiveServer
+@attribute [Authorize]
+
+<h1 class="page-title">Board Lord</h1>
+
+@if (currentHero is null)
+{
+    <div class="loading">Loading…</div>
+}
+else
+{
+    <div class="boardlord-grid">
+        <!-- HERO -->
+        <div class="hero-card">
+            <img src="@currentHero.ImageUrl" alt="@currentHero.Title cover" />
+            <div class="overlay">
+                <span class="rank">#@currentHeroRank • @currentHero.AverageRating.ToString("0.0")★</span>
+                <h2>@currentHero.Title</h2>
+                <p class="meta">@currentHero.Year • @currentHero.MinPlayers–@currentHero.MaxPlayers players</p>
+            </div>
+            <a class="stretched-link" href="@($"/game/{GetKind(currentHero)}/{currentHero.Id}")"></a>
+        </div>
+
+        <!-- minis -->
+        <div class="mini-grid @(isFading ? "is-fading" : "")">
+            @foreach (var m in currentMinis)
+            {
+                <div class="mini-card">
+                    <img src="@m.game.ImageUrl" alt="@m.game.Title cover" />
+                    <div class="overlay">
+                        <span class="rank">#@m.rank</span>
+                        <h3>@m.game.Title</h3>
+                    </div>
+                    <a class="stretched-link" href="@($"/game/{GetKind(m.game)}/{m.game.Id}")"></a>
+                </div>
+            }
+        </div>
+    </div>
+
+    @if (others.Count > 0)
+    {
+        <section class="also-great">
+            <h2>Also Great</h2>
+            <div class="others-grid">
+                @foreach (var g in others)
+                {
+                    var kind = GetKind(g);
+                    <div class="og-card">
+                        <img src="@g.ImageUrl" alt="@g.Title cover" />
+                        <div class="info">
+                            <h4>@g.Title</h4>
+                            <p class="meta">@g.Year • @g.MinPlayers–@g.MaxPlayers</p>
+                            <div class="rating" title="@($"{g.AverageRating:0.0} stars • {(g.Ratings?.Count ?? 0)} ratings")">
+                                @foreach (var cls in GetStarClasses(g.AverageRating))
+                                {
+                                    <i class="@cls"></i>
+                                }
+                                <span class="count">(@(g.Ratings?.Count ?? 0))</span>
+                            </div>
+                        </div>
+                        <a class="stretched-link" href="@($"/game/{kind}/{g.Id}")"></a>
+                    </div>
+                }
+            </div>
+        </section>
+    }
+}
+
+@code {
+    // --- knobs ---
+    private const double MinAvg = 4.0;   // eligible threshold
+    private const int MinVotes = 1;   // at least N ratings
+    private const int WindowSize = 5; // hero + 4 minis
+    private const int RotateMs = 5000;
+    private const int FadeMs = 250;
+
+    // data
+    private List<IGame> ranked = new();         // all eligible, sorted
+    private Dictionary<int, int> rankMap = new();// id -> 1-based rank
+    private List<IGame> top = new();            // top 5 window
+    private List<IGame> others = new();         // everything after top 5
+
+    // rotation state
+    private int offset = 0;
+    private bool isFading = false;
+    private CancellationTokenSource? _cts;
+
+    // computed window
+    private IGame? currentHero;
+    private int currentHeroRank;
+    private List<(IGame game, int rank)> currentMinis = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var boards = await BoardSvc.GetAllAsync();
+        var cards = await CardSvc.GetAllAsync();
+        var all = boards.Cast<IGame>().Concat(cards.Cast<IGame>()).ToList();
+
+        // eligible = high-rated only
+        var eligible = all.Where(g => (g.Ratings?.Count ?? 0) >= MinVotes
+                                   && g.AverageRating >= MinAvg);
+
+        // global ranking (stable)
+        ranked = eligible
+            .OrderByDescending(g => g.AverageRating)
+            .ThenByDescending(g => g.Year)
+            .ThenBy(g => g.Title)
+            .ToList();
+
+        // map each game's true rank
+        rankMap = ranked
+            .Select((g, i) => new { g.Id, Rank = i + 1 })
+            .ToDictionary(x => x.Id, x => x.Rank);
+
+        // top 5 are the only ones that rotate
+        top = ranked.Take(WindowSize).ToList();
+        others = ranked.Skip(WindowSize).ToList();
+
+        if (top.Count == 0)
+        {
+            currentHero = null;
+            return;
+        }
+
+        UpdateWindow(); // set hero + minis
+
+        if (top.Count > 1)
+        {
+            _cts = new CancellationTokenSource();
+            _ = RotateLoop(_cts.Token);
+        }
+    }
+
+    private void UpdateWindow()
+    {
+        if (top.Count == 0) return;
+
+        var heroIndex = offset % top.Count;
+        currentHero = top[heroIndex];
+        currentHeroRank = rankMap[currentHero.Id];
+
+        currentMinis.Clear();
+        var minisToTake = Math.Min(top.Count - 1, 4);
+        for (int i = 1; i <= minisToTake; i++)
+        {
+            var idx = (offset + i) % top.Count;
+            var g = top[idx];
+            currentMinis.Add((g, rankMap[g.Id]));
+        }
+        StateHasChanged();
+    }
+
+    private async Task RotateLoop(CancellationToken token)
+    {
+        while (!token.IsCancellationRequested && top.Count > 1)
+        {
+            await Task.Delay(RotateMs, token);
+            isFading = true;
+            StateHasChanged();
+
+            await Task.Delay(FadeMs, token);
+            offset = (offset + 1) % top.Count;
+            isFading = false;
+
+            UpdateWindow();
+        }
+    }
+
+    public void Dispose()
+    {
+        _cts?.Cancel();
+        _cts?.Dispose();
+    }
+
+    private static string GetKind(IGame g) => g is BoardGame ? "board" : "card";
+
+    private static IEnumerable<string> GetStarClasses(double rating)
+    {
+        var stars = new List<string>(5);
+        var full = (int)Math.Floor(rating);
+        var frac = rating - full;
+        var hasHalf = frac >= 0.25 && frac < 0.75;
+        var bump = frac >= 0.75 ? 1 : 0;
+
+        for (int i = 0; i < 5; i++)
+        {
+            if (i < full + bump) stars.Add("bi bi-star-fill");
+            else if (hasHalf && i == full) stars.Add("bi bi-star-half");
+            else stars.Add("bi bi-star");
+        }
+        return stars;
+    }
+}
