@@ -9,7 +9,7 @@ obj/
 *.sln.docstates
 
 # Visual Studio files
-.vs/
+*.vs/
 *.VC.db
 *.VC.opendb
 
