@@ -1,7 +1,7 @@
 # Visual Studio
 .vs/
 bin/
-obj/
+.obj/
 *.user
 *.suo
 *.userosscache
