@@ -1,33 +1,44 @@
-# Visual Studio
-.vs/
+# Build output
 bin/
-.obj/
+obj/
+
+# User-specific files
 *.user
 *.suo
 *.userosscache
 *.sln.docstates
 
-# Build results
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
-x64/
-x86/
-bld/
-[Bb]in/
-[Oo]bj/
-
-# Visual Studio cache files
+# Visual Studio files
+.vs/
 *.VC.db
 *.VC.opendb
 
-# NuGet
-packages/
+# NuGet packages
 *.nupkg
+packages/
 **/packages/*
 
-# Others
+# ASP.NET/Blazor specific
+wwwroot/dist/
+wwwroot/node_modules/
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Configuration files
+appsettings.*.json
+
+# Logs and temp files
 *.log
 *.tmp
+
+# OS generated files
 Thumbs.db
+.DS_Store
+
+# IDE settings
+.idea/
+.vscode/
+
+# Publish output
+publish/
