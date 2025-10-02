@@ -1,0 +1,14 @@
+@page "/edit-profile"
+@inject NavigationManager Nav
+@rendermode InteractiveServer
+
+<PageTitle>Edit Profile</PageTitle>
+
+<p>Redirecting to the profile management page…</p>
+
+@code {
+    protected override void OnInitialized()
+    {
+        Nav.NavigateTo("/Account/Manage", forceLoad: true);
+    }
+}

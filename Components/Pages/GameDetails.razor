@@ -1,11 +1,19 @@
 ﻿@page "/game/{kind}/{id:int}"
+@using BoardHoard.Services
 @using Boardgames.Shared
+@using System.ComponentModel.DataAnnotations;
 @inject BoardHoard.Services.IBoardGameService BoardSvc
 @inject BoardHoard.Services.ICardGameService CardSvc
 @inject IJSRuntime JS
 @inject NavigationManager Nav
 @rendermode InteractiveServer
-
+@using BoardHoard.Data
+@inject AuthenticationStateProvider Auth
+@inject IReviewsService Reviews
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthState
+@inject IImageService ImageSvc
+@inject ApplicationDbContext Db
 
 @if (game is null)
 {
@@ -15,7 +23,14 @@ else
 {
     <div class="game-details">
         <div class="media">
-            <img src="@game.ImageUrl" alt="@game.Title cover" />
+            @if (!string.IsNullOrWhiteSpace(game?.ImageUrl))
+            {
+                <img src="@game.ImageUrl" alt="@game?.Title" />
+            }
+            else if (game?.ImageId is int iid)
+            {
+                <img src="@($"/api/images/{iid}")" alt="@game?.Title" />
+            }
         </div>
 
         <div class="content">
@@ -25,11 +40,11 @@ else
                 <p class="meta">@game.Year • @game.MinPlayers–@game.MaxPlayers players</p>
 
                 <div class="rating">
-                    @foreach (var cls in GetStarClasses(game.AverageRating))
+                    @foreach (var cls in GetStarClasses((double)game.AvgRating))
                     {
                         <i class="@cls"></i>
                     }
-                    <span class="count">(@(game.Ratings?.Count ?? 0))</span>
+                    <span class="count">(@game.RatingsCount)</span>
                 </div>
 
                 @if (!string.IsNullOrWhiteSpace(game.Publisher))
@@ -47,6 +62,29 @@ else
                     <span class="badge-sent" title="Sentimental">@game.SentimentalScore</span>
                 </div>
 
+                @if (game?.Tags?.Count > 0)
+                {
+                    <div class="tag-chips d-flex flex-wrap gap-2 mt-2">
+                        @foreach (var t in game.Tags)
+                        {
+                            var d = TagCatalog.Describe(t);
+                            var key = TagCatalog.ParseKey(t) ?? "?";
+                            var label = d?.Label ?? TagCatalog.ParseValue(t) ?? "?";
+                            var hint = d?.Hint ?? key;
+
+                            <span class="badge rounded-pill text-bg-secondary tag-chip"
+                                  title="@($"{key}: {label} — {hint}")"
+                                  data-bs-toggle="tooltip">
+                                @label
+                            </span>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-muted small mt-2">No tags yet.</div>
+                }
+
                 <AuthorizeView Roles="Admin">
                     <Authorized>
                         <div class="d-flex gap-2">
@@ -62,6 +100,14 @@ else
                     <DataAnnotationsValidator />
 
                     <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Type</label>
+                            <select class="form-select" @bind="editKind">
+                                <option value="board">Board Game</option>
+                                <option value="card">Card Game</option>
+                            </select>
+                        </div>
+
                         <div class="col-md-7">
                             <label class="form-label">Title</label>
                             <InputText class="form-control" @bind-Value="editModel!.Title" />
@@ -69,26 +115,31 @@ else
 
                         <div class="col-md-2">
                             <label class="form-label">Year</label>
-                            <InputNumber class="form-control" @bind-Value="editModel!.Year" />
+                            <InputNumber class="form-control" @bind-Value="editModel!.Year" min="0" />
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label">Age Rating</label>
-                            <InputNumber class="form-control" @bind-Value="editModel!.ageRating" />
+                            <InputNumber class="form-control" @bind-Value="editModel!.ageRating" min="0" />
                         </div>
 
                         <div class="col-md-3">
                             <label class="form-label">Min Players</label>
-                            <InputNumber class="form-control" @bind-Value="editModel!.MinPlayers" />
+                            <InputNumber class="form-control" @bind-Value="editModel!.MinPlayers" min="1" />
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Max Players</label>
-                            <InputNumber class="form-control" @bind-Value="editModel!.MaxPlayers" />
+                            <InputNumber class="form-control" @bind-Value="editModel!.MaxPlayers" min="1" />
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label">Image URL</label>
-                            <InputText class="form-control" @bind-Value="editModel!.ImageUrl" />
+                            <label class="form-label">Upload Image</label>
+                            <InputFile OnChange="OnImageSelected" accept="image/*" />
+                            <div class="form-text">JPG/PNG, up to 5 MB.</div>
+                            @if (!string.IsNullOrWhiteSpace(editModel?.ImageUrl))
+                            {
+                                <img src="@editModel.ImageUrl" alt="Preview" class="img-fluid mt-2 rounded" />
+                            }
                         </div>
 
                         <div class="col-md-6">
@@ -103,18 +154,18 @@ else
 
                         <div class="col-md-3">
                             <label class="form-label">Rarity (0–100)</label>
-                            <InputNumber class="form-control" @bind-Value="editModel!.RarityScore" />
+                            <InputNumber class="form-control" @bind-Value="editModel!.RarityScore" min="0" max="100" />
                         </div>
                         <div class="col-md-3">
                             <label class="form-label">Sentimental (0–100)</label>
-                            <InputNumber class="form-control" @bind-Value="editModel!.SentimentalScore" />
+                            <InputNumber class="form-control" @bind-Value="editModel!.SentimentalScore" min="0" max="100" />
                         </div>
 
                         @if (kind == "card")
                         {
                             <div class="col-md-3">
                                 <label class="form-label">Card Count</label>
-                                <InputNumber class="form-control" @bind-Value="((CardGame)editModel!).cardCount" />
+                                <InputNumber class="form-control" @bind-Value="((CardGame)editModel!).cardCount" min="0" />
                             </div>
                         }
 
@@ -130,6 +181,199 @@ else
                 </EditForm>
             }
         </div>
+
+        <div>
+            <h3 class="mt-4">Reviews</h3>
+
+            <AuthorizeView>
+                <Authorized Context="auth">
+                    @if (myReview is null && !editingReview)
+                    {
+                        <div class="review-editor card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Write a review</h5>
+                                <EditForm Model="reviewInput" OnValidSubmit="SaveReviewAsync">
+                                    <DataAnnotationsValidator />
+                                    <div class="row g-2 align-items-end">
+                                        <div class="col-md-2">
+                                            <label class="form-label">Your Rating (0–5)</label>
+                                            <input type="number" class="form-control" @bind="reviewInput.Rating" min="0" max="5" step="0.5" />
+                                        </div>
+                                        <div class="col-md-10">
+                                            <label class="form-label">Title (optional)</label>
+                                            <InputText class="form-control" @bind-Value="reviewInput.Title" />
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label">Your Review</label>
+                                            <InputTextArea class="form-control" rows="4" @bind-Value="reviewInput.Body" />
+                                        </div>
+                                        <div class="col-12 d-flex gap-2 mt-2">
+                                            <button class="btn btn-primary" type="submit">
+                                                <i class="bi bi-chat-right-text"></i> Post Review
+                                            </button>
+                                        </div>
+                                    </div>
+                                </EditForm>
+                            </div>
+                        </div>
+                    }
+                    else if (myReview is not null && !editingReview)
+                    {
+                        <div class="card my-review mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="d-flex align-items-center gap-2">
+                                        @foreach (var cls in GetStarClasses(myReview.Rating))
+                                        {
+                                            <i class="@cls"></i>
+                                        }
+                                        <strong>@myReview.Rating/5</strong>
+                                    </div>
+                                    <div class="review-actions">
+                                        <button class="btn btn-sm btn-outline-light" title="Edit" @onclick="EnterEditReview"><i class="bi bi-pencil-square"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger" title="Delete" @onclick="DeleteReviewAsync"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                </div>
+                                @if (!string.IsNullOrWhiteSpace(myReview.Title))
+                                {
+                                    <h5 class="card-title mt-2">@myReview.Title</h5>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(myReview.Body))
+                                {
+                                    <p class="card-text">@myReview.Body</p>
+                                }
+                                <div class="text-muted small">@((myReview.UpdatedAt ?? myReview.CreatedAt).LocalDateTime.ToString("g"))</div>
+                            </div>
+                        </div>
+                    }
+                    else if (editingReview)
+                    {
+                        <div class="review-editor card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Edit your review</h5>
+                                    <button class="btn btn-sm btn-outline-light" @onclick="CancelEditReview"><i class="bi bi-x-lg"></i></button>
+                                </div>
+                                <EditForm Model="reviewInput" OnValidSubmit="SaveReviewAsync" class="mt-3">
+                                    <DataAnnotationsValidator />
+                                    <div class="row g-2 align-items-end">
+                                        <div class="col-md-2">
+                                            <label class="form-label">Your Rating (0–5)</label>
+                                            <input type="number" class="form-control" @bind="reviewInput.Rating" min="0" max="5" step="0.5" />
+                                        </div>
+                                        <div class="col-md-10">
+                                            <label class="form-label">Title (optional)</label>
+                                            <InputText class="form-control" @bind-Value="reviewInput.Title" />
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label">Your Review</label>
+                                            <InputTextArea class="form-control" rows="4" @bind-Value="reviewInput.Body" />
+                                        </div>
+                                        <div class="col-12 d-flex gap-2 mt-2">
+                                            <button class="btn btn-primary" type="submit">
+                                                <i class="bi bi-check2"></i> Save Changes
+                                            </button>
+                                            <button class="btn btn-outline-light" type="button" @onclick="CancelEditReview">
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </EditForm>
+                            </div>
+                        </div>
+                    }
+                </Authorized>
+                <NotAuthorized Context="anon">
+                    <p><em>Sign in to write a review.</em></p>
+                </NotAuthorized>
+            </AuthorizeView>
+
+            @if (!showAllReviews)
+            {
+                <div class="mt-3 reviews">
+                    @foreach (var r in recentReviews)
+                    {
+                        var p = GetProfile(r.UserId);
+                        <div class="card review mb-2">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <a class="avatar" href="@($"/u/{Uri.EscapeDataString(p?.DisplayName ?? "user")}")" title="@p?.DisplayName">
+                                        @if (!string.IsNullOrWhiteSpace(p?.PhotoUrl))
+                                        {
+                                            <img src="@p.PhotoUrl" alt="@p.DisplayName" loading="lazy" />
+                                        }
+                                        else
+                                        {
+                                            <div class="avatar-fallback">@((p?.DisplayName ?? "?").Substring(0, 1).ToUpper())</div>
+                                        }
+                                    </a>
+                                    <div class="flex-grow-1">
+                                        <a class="reviewer" href="@($"/u/{Uri.EscapeDataString(p?.DisplayName ?? "user")}")">@p?.DisplayName</a>
+                                        <div class="text-muted small">@((r.UpdatedAt ?? r.CreatedAt).LocalDateTime.ToString("g"))</div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    @foreach (var cls in GetStarClasses(r.Rating))
+                                    {
+                                        <i class="@cls"></i>
+                                    }
+                                    <strong>@r.Rating/5</strong>
+                                </div>
+                                @if (!string.IsNullOrWhiteSpace(r.Title))
+                                {
+                                    <h6 class="mb-1">@r.Title</h6>
+                                }
+                                <p class="mb-0">@r.Body</p>
+                            </div>
+                        </div>
+                    }
+                    <button class="btn btn-link" @onclick="LoadAllReviewsAsync">See all reviews</button>
+                </div>
+            }
+            else if (allReviews is not null)
+            {
+                <div class="mt-3 reviews">
+                    @foreach (var r in allReviews)
+                    {
+                        var p = GetProfile(r.UserId);
+                        <div class="card review mb-2">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <a class="avatar" href="@($"/u/{Uri.EscapeDataString(p?.DisplayName ?? "user")}")" title="@p?.DisplayName">
+                                        @if (!string.IsNullOrWhiteSpace(p?.PhotoUrl))
+                                        {
+                                            <img src="@p.PhotoUrl" alt="@p.DisplayName" loading="lazy" />
+                                        }
+                                        else
+                                        {
+                                            <div class="avatar-fallback">@((p?.DisplayName ?? "?").Substring(0, 1).ToUpper())</div>
+                                        }
+                                    </a>
+                                    <div class="flex-grow-1">
+                                        <a class="reviewer" href="@($"/u/{Uri.EscapeDataString(p?.DisplayName ?? "user")}")">@p?.DisplayName</a>
+                                        <div class="text-muted small">@((r.UpdatedAt ?? r.CreatedAt).LocalDateTime.ToString("g"))</div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    @foreach (var cls in GetStarClasses(r.Rating))
+                                    {
+                                        <i class="@cls"></i>
+                                    }
+                                    <strong>@r.Rating/5</strong>
+                                </div>
+                                @if (!string.IsNullOrWhiteSpace(r.Title))
+                                {
+                                    <h6 class="mb-1">@r.Title</h6>
+                                }
+                                <p class="mb-0">@r.Body</p>
+                            </div>
+                        </div>
+                    }
+                    <button class="btn btn-link" @onclick="@(() => showAllReviews = false)">Show less</button>
+                </div>
+            }
+        </div>
+
     </div>
 }
 
@@ -141,25 +385,101 @@ else
     private IGame? editModel;
     private bool isEditing = false;
     private bool saving = false;
+    private List<Review> recentReviews = new();
+    private List<Review>? allReviews = null;
+    private Review? myReview;
+    private bool showAllReviews = false;
+    private int rarityNet, sentimentalNet;
+    private double myRating = 5;
+    private string? myTitle;
+    private string? myBody;
+    private string? myUserId;
+    private string editKind = "board";
+    private bool editingReview = false;
+
+    private Dictionary<string, UserProfile?> _profileCache = new();
+
+    private UserProfile? GetProfile(string userId)
+    {
+        if (_profileCache.TryGetValue(userId, out var cached))
+            return cached;
+
+        // First try to get UserProfile record
+        var profile = Db.UserProfiles.FirstOrDefault(up => up.UserId == userId);
+
+        if (profile == null)
+        {
+            // If no UserProfile exists, create one from ApplicationUser data
+            var appUser = Db.Users.FirstOrDefault(u => u.Id == userId);
+            if (appUser != null)
+            {
+                profile = new UserProfile
+                    {
+                        Id = Guid.NewGuid(),
+                        UserId = userId,
+                        DisplayName = appUser.DisplayName ?? appUser.UserName ?? "Unknown User",
+                        PhotoUrl = appUser.PhotoUrl
+                    };
+
+                // Save the new profile
+                try
+                {
+                    Db.UserProfiles.Add(profile);
+                    Db.SaveChanges();
+                }
+                catch
+                {
+                    // If save fails (maybe concurrent creation), try to get it again
+                    profile = Db.UserProfiles.FirstOrDefault(up => up.UserId == userId);
+                }
+            }
+        }
+
+        _profileCache[userId] = profile;
+        return profile;
+    }
+
+    // Also add this method to refresh the cache when needed
+    private void ClearProfileCache()
+    {
+        _profileCache.Clear();
+    }
+
+    private GameKind KindEnum => (kind?.ToLowerInvariant()) switch
+    {
+        "board" => GameKind.Board,
+        "card" => GameKind.Card,
+        _ => GameKind.Board
+    };
 
     protected override async Task OnParametersSetAsync()
     {
-        var k = (kind ?? "").ToLowerInvariant();
+        game = kind == "card"
+            ? await CardSvc.GetByIdAsync(id)
+            : await BoardSvc.GetByIdAsync(id);
 
-        if (k == "board")
+        if (game != null)
         {
-            game = await BoardSvc.GetByIdAsync(id);
-            return;
-        }
-        if (k == "card")
-        {
-            game = await CardSvc.GetByIdAsync(id);
-            return;
-        }
+            recentReviews = await Reviews.GetRecentAsync(KindEnum, id, 3);
 
-        var b = await BoardSvc.GetByIdAsync(id);
-        if (b != null) { game = b; return; }
-        game = await CardSvc.GetByIdAsync(id);
+            var authState = await AuthState.GetAuthenticationStateAsync();
+            var isAuthed = authState.User?.Identity?.IsAuthenticated == true;
+
+            if (isAuthed)
+            {
+                try
+                {
+                    myReview = await Reviews.GetMineAsync(KindEnum, id);
+                    if (myReview != null)
+                    {
+                        reviewInput.Rating = myReview.Rating;
+                        reviewInput.Title = myReview.Title;
+                        reviewInput.Body = myReview.Body;
+                    }
+                }
+                catch { myReview = null; }
+            }
+        }
     }
 
     private void EnterEdit()
@@ -170,6 +490,7 @@ else
             ? Clone((CardGame)game)
             : Clone((BoardGame)game);
         isEditing = true;
+        editKind = kind;
     }
 
     private void CancelEdit()
@@ -184,23 +505,78 @@ else
         saving = true;
         try
         {
-            bool ok = false;
-            if (kind == "card")
+            // If type changed, create in new collection and delete the old
+            if (editKind != kind)
             {
-                ok = await CardSvc.UpdateAsync(id, (CardGame)editModel);
+                if (editKind == "card")
+                {
+                    var newModel = new CardGame
+                    {
+                        Title = editModel.Title,
+                        Year = editModel.Year,
+                        MinPlayers = editModel.MinPlayers,
+                        MaxPlayers = editModel.MaxPlayers,
+                        ImageUrl = editModel.ImageUrl,
+                        ImageId = editModel.ImageId,
+                        Publisher = editModel.Publisher,
+                        Description = editModel.Description,
+                        ageRating = editModel.ageRating,
+                        RarityScore = editModel.RarityScore,
+                        SentimentalScore = editModel.SentimentalScore
+                    };
+                    var created = await CardSvc.CreateAsync(newModel);
+                    if (created is not null)
+                    {
+                        await (kind == "board" ? BoardSvc.DeleteAsync(id) : CardSvc.DeleteAsync(id));
+                        Nav.NavigateTo($"/game/card/{created.Id}");
+                        return;
+                    }
+                }
+                else // switching to board
+                {
+                    var newModel = new BoardGame
+                    {
+                        Title = editModel.Title,
+                        Year = editModel.Year,
+                        MinPlayers = editModel.MinPlayers,
+                        MaxPlayers = editModel.MaxPlayers,
+                        ImageUrl = editModel.ImageUrl,
+                        ImageId = editModel.ImageId,
+                        Publisher = editModel.Publisher,
+                        Description = editModel.Description,
+                        ageRating = editModel.ageRating,
+                        RarityScore = editModel.RarityScore,
+                        SentimentalScore = editModel.SentimentalScore
+                    };
+                    var created = await BoardSvc.CreateAsync(newModel);
+                    if (created is not null)
+                    {
+                        await (kind == "card" ? CardSvc.DeleteAsync(id) : BoardSvc.DeleteAsync(id));
+                        Nav.NavigateTo($"/game/board/{created.Id}");
+                        return;
+                    }
+                }
             }
             else
             {
-                ok = await BoardSvc.UpdateAsync(id, (BoardGame)editModel);
-            }
+                bool ok = false;
+                if (kind == "card")
+                {
+                    ok = await CardSvc.UpdateAsync(id, (CardGame)editModel);
+                }
+                else
+                {
+                    ok = await BoardSvc.UpdateAsync(id, (BoardGame)editModel);
+                }
 
-            if (ok)
-            {
-                // refresh view state with the saved model
-                game = kind == "card" ? (IGame)Clone((CardGame)editModel) : Clone((BoardGame)editModel);
-                isEditing = false;
-                editModel = null;
-                StateHasChanged();
+                if (ok)
+                {
+                    // refresh view state with the saved model
+                    game = kind == "card" ? (IGame)Clone((CardGame)editModel) : Clone((BoardGame)editModel);
+                    isEditing = false;
+                    editModel = null;
+                    StateHasChanged();
+                }
             }
         }
         finally { saving = false; }
@@ -218,6 +594,100 @@ else
         if (success) Nav.NavigateTo("/games");
     }
 
+    private async Task SaveReviewAsync()
+    {
+        if (game is null) return;
+
+        reviewInput.Rating = Math.Clamp(reviewInput.Rating, 0, 5);
+
+        var saved = await Reviews.UpsertAsync(
+            KindEnum, id,
+            reviewInput.Rating,
+            reviewInput.Title,
+            reviewInput.Body
+        );
+
+        if (saved is not null)
+        {
+            myReview = saved;
+            editingReview = false;
+        }
+        recentReviews = await Reviews.GetRecentAsync(KindEnum, id, 3);
+        game = kind == "card"
+            ? await CardSvc.GetByIdAsync(id)
+            : await BoardSvc.GetByIdAsync(id);
+        if (showAllReviews) allReviews = await Reviews.GetAllAsync(KindEnum, id);
+        StateHasChanged();
+    }
+
+    private async Task DeleteReviewAsync()
+    {
+        await Reviews.DeleteMineAsync(KindEnum, id);
+        myReview = null;
+        editingReview = false;
+        reviewInput = new ReviewInput { Rating = 5 };
+        recentReviews = await Reviews.GetRecentAsync(KindEnum, id, 3);
+        game = kind == "card"
+            ? await CardSvc.GetByIdAsync(id)
+            : await BoardSvc.GetByIdAsync(id);
+        if (showAllReviews) allReviews = await Reviews.GetAllAsync(KindEnum, id);
+        StateHasChanged();
+    }
+
+    private async Task LoadAllReviewsAsync()
+    {
+        allReviews = await Reviews.GetAllAsync(KindEnum, id);
+        showAllReviews = true;
+    }
+
+    private async Task OnImageSelected(InputFileChangeEventArgs e)
+    {
+        if (editModel is null) return;
+
+        var file = e.File;
+        // Optional: validate size/type here
+
+        try
+        {
+            // Assumes your API returns something like { imageId, url }
+            var result = await ImageSvc.UploadAsync(file); // implement below
+            if (result is not null)
+            {
+                // if your model uses ImageId, set it; always set URL used by <img>
+                if (editModel is BoardGame bg)
+                {
+                    bg.ImageUrl = result.Url;
+                    bg.ImageId = result.ImageId;
+                }
+                else if (editModel is CardGame cg)
+                {
+                    cg.ImageUrl = result.Url;
+                    cg.ImageId = result.ImageId;
+                }
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            // TODO: surface a toast/alert; for now just avoid crash
+            Console.Error.WriteLine(ex);
+        }
+    }
+
+    private void EnterEditReview()
+    {
+        if (myReview is null) return;
+        reviewInput.Rating = myReview.Rating;
+        reviewInput.Title = myReview.Title;
+        reviewInput.Body = myReview.Body;
+        editingReview = true;
+    }
+
+    private void CancelEditReview()
+    {
+        editingReview = false;
+    }
+
     // shallow clones (enough for our simple models)
     private static BoardGame Clone(BoardGame g) => new()
         {
@@ -227,10 +697,10 @@ else
             MinPlayers = g.MinPlayers,
             MaxPlayers = g.MaxPlayers,
             ImageUrl = g.ImageUrl,
+            ImageId = g.ImageId,
             Publisher = g.Publisher,
             Description = g.Description,
             ageRating = g.ageRating,
-            Ratings = g.Ratings?.ToList() ?? new(),
             RarityScore = g.RarityScore,
             SentimentalScore = g.SentimentalScore
         };
@@ -243,14 +713,28 @@ else
             MinPlayers = g.MinPlayers,
             MaxPlayers = g.MaxPlayers,
             ImageUrl = g.ImageUrl,
+            ImageId = g.ImageId,
             Publisher = g.Publisher,
             Description = g.Description,
             ageRating = g.ageRating,
-            Ratings = g.Ratings?.ToList() ?? new(),
             RarityScore = g.RarityScore,
             SentimentalScore = g.SentimentalScore,
             cardCount = g.cardCount
         };
+
+    public class ReviewInput
+    {
+        [Range(0, 5)]
+        public double Rating { get; set; } = 5;
+
+        [MaxLength(120)]
+        public string? Title { get; set; }
+
+        [MaxLength(4000)]
+        public string? Body { get; set; }
+    }
+
+    private ReviewInput reviewInput = new();
 
     private static IEnumerable<string> GetStarClasses(double rating)
     {

@@ -86,3 +86,47 @@
         height: 300px;
     }
 }
+
+
+/* Keep review avatars small and tidy */
+.reviews .avatar {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px; /* prevent stretching in flex rows */
+    display: inline-block;
+}
+
+    .reviews .avatar img {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+    }
+
+.reviews .avatar-fallback {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #e9ecef;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+/* Optional: tighten review card padding a bit */
+.card.review .card-body {
+    padding: .75rem 1rem;
+}
+
+.tag-chip {
+    font-weight: 500;
+    padding: .4rem .6rem;
+}
+
+.tag-chips {
+    row-gap: .4rem;
+    margin-bottom: 1rem;
+}

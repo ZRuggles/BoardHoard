@@ -1,8 +1,10 @@
-﻿// IImageService.cs
-using Microsoft.AspNetCore.Components.Forms;
+﻿using Microsoft.AspNetCore.Components.Forms;
 
 namespace BoardHoard.Services;
+
 public interface IImageService
 {
-    Task<string?> UploadAsync(IBrowserFile file, string? title, CancellationToken ct = default);
+    Task<ImageUploadResult?> UploadAsync(IBrowserFile file);
 }
+
+public record ImageUploadResult(int ImageId, string Url);

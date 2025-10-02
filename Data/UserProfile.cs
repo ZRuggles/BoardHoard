@@ -9,11 +9,13 @@ public class UserProfile
     public ApplicationUser? User { get; set; }
     public string DisplayName { get; set; } = "";
     public string? PhotoUrl { get; set; }
-    public string? Cohort { get; set; }
     public int? Age { get; set; }
     public string? FavoriteGame { get; set; }
     public string? FavoriteMechanic { get; set; }
     public string? Bio { get; set; }
+
+    // JSON array of up to 3 items: [{ "kind": "board"|"card", "id": 123, "title": "..." }]
+    public string? TopGamesJson { get; set; }
 }
 
 public class WallMessage

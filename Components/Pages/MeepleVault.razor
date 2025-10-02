@@ -83,8 +83,8 @@ else
         double Score(IGame g)
         {
             var ageScore = Math.Clamp((now - g.Year) / (double)maxAge, 0, 1); // older = higher
-            var rarity = Math.Clamp(g.RarityScore / 100.0, 0, 1);
-            var sent = Math.Clamp(g.SentimentalScore / 100.0, 0, 1);
+            var rarity = Math.Clamp((double)g.RarityScore / 100.0, 0, 1);
+                       var sent = Math.Clamp((double)g.SentimentalScore / 100.0, 0, 1);
             return WAge * ageScore + WRarity * rarity + WSent * sent;
         }
 

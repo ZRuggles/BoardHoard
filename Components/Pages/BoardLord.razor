@@ -19,7 +19,7 @@ else
         <div class="hero-card">
             <img src="@currentHero.ImageUrl" alt="@currentHero.Title cover" />
             <div class="overlay">
-                <span class="rank">#@currentHeroRank • @currentHero.AverageRating.ToString("0.0")★</span>
+                <span class="rank">#@currentHeroRank • @currentHeroAvg.ToString("0.0")★</span>
                 <h2>@currentHero.Title</h2>
                 <p class="meta">@currentHero.Year • @currentHero.MinPlayers–@currentHero.MaxPlayers players</p>
             </div>
@@ -50,17 +50,18 @@ else
                 @foreach (var g in others)
                 {
                     var kind = GetKind(g);
+                    var rr = (g.AvgRating, g.RatingsCount);
                     <div class="og-card">
                         <img src="@g.ImageUrl" alt="@g.Title cover" />
                         <div class="info">
                             <h4>@g.Title</h4>
                             <p class="meta">@g.Year • @g.MinPlayers–@g.MaxPlayers</p>
-                            <div class="rating" title="@($"{g.AverageRating:0.0} stars • {(g.Ratings?.Count ?? 0)} ratings")">
-                                @foreach (var cls in GetStarClasses(g.AverageRating))
+                            <div class="rating" title="@($"{rr.AvgRating:0.0} stars • {rr.RatingsCount} ratings")">
+                                @foreach (var cls in GetStarClasses((double)rr.AvgRating))
                                 {
                                     <i class="@cls"></i>
                                 }
-                                <span class="count">(@(g.Ratings?.Count ?? 0))</span>
+                                <span class="count">(@rr.RatingsCount)</span>
                             </div>
                         </div>
                         <a class="stretched-link" href="@($"/game/{kind}/{g.Id}")"></a>
@@ -93,6 +94,7 @@ else
     // computed window
     private IGame? currentHero;
     private int currentHeroRank;
+    private double currentHeroAvg;
     private List<(IGame game, int rank)> currentMinis = new();
 
     protected override async Task OnInitializedAsync()
@@ -101,13 +103,12 @@ else
         var cards = await CardSvc.GetAllAsync();
         var all = boards.Cast<IGame>().Concat(cards.Cast<IGame>()).ToList();
 
-        // eligible = high-rated only
-        var eligible = all.Where(g => (g.Ratings?.Count ?? 0) >= MinVotes
-                                   && g.AverageRating >= MinAvg);
+        // eligible by aggregates on the game row
+        var eligible = all.Where(g => g.RatingsCount >= MinVotes && (double)g.AvgRating >= MinAvg);
 
         // global ranking (stable)
         ranked = eligible
-            .OrderByDescending(g => g.AverageRating)
+            .OrderByDescending(g => g.AvgRating)
             .ThenByDescending(g => g.Year)
             .ThenBy(g => g.Title)
             .ToList();
@@ -143,6 +144,7 @@ else
         var heroIndex = offset % top.Count;
         currentHero = top[heroIndex];
         currentHeroRank = rankMap[currentHero.Id];
+        currentHeroAvg = (double)currentHero.AvgRating;
 
         currentMinis.Clear();
         var minisToTake = Math.Min(top.Count - 1, 4);

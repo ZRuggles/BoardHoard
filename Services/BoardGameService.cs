@@ -27,6 +27,24 @@ public class BoardGameService(HttpClient http) : IBoardGameService
         return res.IsSuccessStatusCode;
     }
 
+    public async Task UpsertAsync(IGame model, CancellationToken ct = default)
+    {
+        // route based on type
+        var isCard = model is CardGame;
+        var basePath = isCard ? "api/cardgames" : "api/boardgames";
+
+        if (model.Id == 0)
+        {
+            var res = await http.PostAsJsonAsync(basePath, model, ct);
+            res.EnsureSuccessStatusCode();
+        }
+        else
+        {
+            var res = await http.PutAsJsonAsync($"{basePath}/{model.Id}", model, ct);
+            res.EnsureSuccessStatusCode();
+        }
+    }
+
     public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
     {
         var res = await _http.DeleteAsync($"{Base}/{id}", ct);

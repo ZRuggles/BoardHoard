@@ -61,12 +61,12 @@ else if (featured.Count > 0)
                     <div class="info">
                         <h4>@g.Title</h4>
                         <p class="meta">@g.Year • @g.MinPlayers–@g.MaxPlayers</p>
-                        <div class="rating" title="@($"{g.AverageRating:0.0} stars • {(g.Ratings?.Count ?? 0)} ratings")">
-                            @foreach (var cls in GetStarClasses(g.AverageRating))
+                        <div class="rating" title="@($"{g.AvgRating:0.0} stars • {g.RatingsCount} ratings")">
+                            @foreach (var cls in GetStarClasses((double)g.AvgRating))
                             {
                                 <i class="@cls"></i>
                             }
-                            <span class="count">(@(g.Ratings?.Count ?? 0))</span>
+                            <span class="count">(@g.RatingsCount)</span>
                         </div>
                     </div>
                     <a class="stretched-link" href="@($"/game/{kind}/{g.Id}")"></a>
@@ -97,7 +97,7 @@ else if (featured.Count > 0)
             newestYear = all.Max(g => g.Year);
 
             // pick 6 by rating, then recency
-            featured = all.OrderByDescending(g => g.AverageRating)
+            featured = all.OrderByDescending(g => g.AvgRating)
                           .ThenByDescending(g => g.Year)
                           .ThenBy(g => g.Title)
                           .Take(5)

@@ -9,4 +9,5 @@ public interface IBoardGameService
     Task<BoardGame?> CreateAsync(BoardGame game, CancellationToken ct = default);
     Task<bool> UpdateAsync(int id, BoardGame game, CancellationToken ct = default);
     Task<bool> DeleteAsync(int id, CancellationToken ct = default);
+
 }

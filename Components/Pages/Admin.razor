@@ -1,0 +1,195 @@
+@page "/admin"
+@attribute [Authorize(Roles = "Admin")]
+@using BoardHoard.Data
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@inject UserManager<ApplicationUser> UserManager
+@inject RoleManager<IdentityRole> RoleManager
+@rendermode InteractiveServer
+
+<PageTitle>Admin • Board Hoard</PageTitle>
+
+<div class="container py-4">
+    <h1 class="mb-3"><i class="bi bi-shield-lock"></i> Admin</h1>
+    <p class="text-muted mb-4">Manage user roles. You can add or remove the <strong>Admin</strong> role.</p>
+
+    @if (!string.IsNullOrEmpty(Alert))
+    {
+        <div class="alert @AlertClass alert-dismissible fade show" role="alert">
+            @Alert
+            <button type="button" class="btn-close" @onclick="() => Alert = null"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <label class="form-label me-2">Search</label>
+                    <input class="form-control d-inline-block" style="width: 260px"
+                           value="@SearchQuery"
+                           @oninput="OnSearchInput"
+                           placeholder="search email..." />
+                </div>
+                <button class="btn btn-outline-secondary" @onclick="LoadUsers">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Display Name</th>
+                            <th>Email</th>
+                            <th>User Id</th>
+                            <th class="text-center">Is Admin</th>
+                            <th style="width: 220px"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (AllUsers is null)
+                        {
+                            <tr><td colspan="4">Loading…</td></tr>
+                        }
+                        else if (FilteredUsers.Count == 0)
+                        {
+                            <tr><td colspan="4" class="text-muted">No users found.</td></tr>
+                        }
+                        else
+                        {
+                            @foreach (var u in FilteredUsers)
+                            {
+                                var isAdmin = AdminIds.Contains(u.Id);
+                                <tr>
+                                    <td><a class="avatar" href="@($"/u/{Uri.EscapeDataString(u?.DisplayName ?? "user")}")" title="@u?.DisplayName">@(u?.DisplayName != null ? u?.DisplayName : "N/A")</a></td>
+                                    <td>@u.Email</td>
+                                    <td class="text-muted small">@u.Id</td>
+                                    <td class="text-center">
+                                        @if (isAdmin)
+                                        {
+                                            <span class="badge bg-success"><i class="bi bi-check2-circle"></i> Admin</span>
+                                            ;
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">User</span>
+                                            ;
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-2 justify-content-end">
+                                            @if (!isAdmin)
+                                            {
+                                                <button class="btn btn-sm btn-primary" @onclick="() => MakeAdmin(u)">
+                                                    <i class="bi bi-shield-plus"></i> Make Admin
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-sm btn-outline-danger" @onclick="() => RemoveAdmin(u)">
+                                                    <i class="bi bi-shield-minus"></i> Remove Admin
+                                                </button>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<ApplicationUser>? AllUsers;
+    private List<ApplicationUser> FilteredUsers => FilterUsers();
+    private HashSet<string> AdminIds = new();
+    private string SearchQuery { get; set; } = string.Empty;
+
+    private string? Alert;
+    private string AlertClass = "alert-info";
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Ensure role exists
+        if (!await RoleManager.RoleExistsAsync("Admin"))
+        {
+            await RoleManager.CreateAsync(new IdentityRole("Admin"));
+        }
+        await LoadUsers();
+    }
+
+    private async Task LoadUsers()
+    {
+        // Load all users (or first 500 if you have many users)
+        AllUsers = await UserManager.Users
+            .OrderBy(u => u.Email)
+            .Take(500)
+            .ToListAsync();
+
+        // Load admin status for all users
+        AdminIds.Clear();
+        foreach (var u in AllUsers)
+        {
+            if (await UserManager.IsInRoleAsync(u, "Admin"))
+                AdminIds.Add(u.Id);
+        }
+        StateHasChanged();
+    }
+
+    private List<ApplicationUser> FilterUsers()
+    {
+        if (AllUsers == null) return new List<ApplicationUser>();
+
+        if (string.IsNullOrWhiteSpace(SearchQuery))
+            return AllUsers;
+
+        var query = SearchQuery.Trim().ToLowerInvariant();
+        return AllUsers
+            .Where(u => u.Email!.ToLowerInvariant().Contains(query))
+            .ToList();
+    }
+
+    private void OnSearchInput(ChangeEventArgs e)
+    {
+        SearchQuery = e.Value?.ToString() ?? string.Empty;
+        // No need to call StateHasChanged() as the FilteredUsers property will automatically update
+    }
+
+    private async Task MakeAdmin(ApplicationUser user)
+    {
+        var res = await UserManager.AddToRoleAsync(user, "Admin");
+        if (res.Succeeded)
+        {
+            AdminIds.Add(user.Id);
+            SetAlert($"Granted Admin to {user.Email}", success: true);
+        }
+        else
+        {
+            SetAlert(string.Join("; ", res.Errors.Select(e => e.Description)), success: false);
+        }
+    }
+
+    private async Task RemoveAdmin(ApplicationUser user)
+    {
+        var res = await UserManager.RemoveFromRoleAsync(user, "Admin");
+        if (res.Succeeded)
+        {
+            AdminIds.Remove(user.Id);
+            SetAlert($"Removed Admin from {user.Email}", success: true);
+        }
+        else
+        {
+            SetAlert(string.Join("; ", res.Errors.Select(e => e.Description)), success: false);
+        }
+    }
+
+    private void SetAlert(string message, bool success)
+    {
+        Alert = message;
+        AlertClass = success ? "alert-success" : "alert-danger";
+    }
+}

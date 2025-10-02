@@ -21,6 +21,7 @@
                         <i class="bi bi-grid-3x3-gap"></i> Game Shelf
                     </NavLink>
                 </li>
+             
 
                 <!-- When signed IN: normal links -->
                 <AuthorizeView>
@@ -36,6 +37,45 @@
                             </NavLink>
                         </li>
 
+                   
+                    </Authorized>
+
+                    <NotAuthorized>
+                        <li class="nav-item">
+                            <span class="nav-link auth-required" title="Sign in to access">
+                                <i class="bi bi-lock"></i> Board Lord
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <span class="nav-link auth-required" title="Sign in to access">
+                                <i class="bi bi-lock"></i> Meeple Vault
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="/about" Match="NavLinkMatch.All">
+                                <i class="bi bi-info-circle"></i> About
+                            </NavLink>
+                        </li>
+                    </NotAuthorized>
+                </AuthorizeView>
+                      
+                <AuthorizeView>
+                    <NotAuthorized>
+                        <li class="nav-item ms-lg-2">
+                            <a class="btn btn-accent" href="@GetLoginUrl()">
+                                <i class="bi bi-box-arrow-in-right"></i> Sign in
+                            </a>
+                        </li>
+                    </NotAuthorized>
+                    <Authorized>
+                        <!-- Admin -->
+                        <AuthorizeView Roles="Admin" Context="adminCtx">
+                            <li class="nav-item">
+                                <NavLink class="nav-link" href="/admin" Match="NavLinkMatch.All">
+                                    <i class="bi bi-shield-lock"></i> Admin
+                                </NavLink>
+                            </li>
+                        </AuthorizeView>
                         <!-- Profile / Logout -->
                         <li class="nav-item dropdown ms-lg-2">
                             <a class="nav-link dropdown-toggle profile-toggle" href="#" role="button"
@@ -57,25 +97,6 @@
                             </ul>
                         </li>
                     </Authorized>
-
-                    <!-- When signed OUT: show "locked" links that go to Login with returnUrl -->
-                    <NotAuthorized>
-                        <li class="nav-item">
-                            <span class="nav-link auth-required " title="Sign in to access">
-                                <i class="bi bi-lock"></i> Board Lord
-                            </span>
-                        </li>
-                        <li class="nav-item">
-                            <span class="nav-link auth-required" title="Sign in to access">
-                                <i class="bi bi-lock"></i> Meeple Vault
-                            </span>
-                        </li>
-                        <li class="nav-item ms-lg-2">
-                            <a class="btn btn-accent" href="@GetLoginUrl()">
-                                <i class="bi bi-box-arrow-in-right"></i> Sign in
-                            </a>
-                        </li>
-                    </NotAuthorized>
                 </AuthorizeView>
             </ul>
         </div>

@@ -1,20 +1,40 @@
-using BoardHoard.Data;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using BoardHoard.Data;
 
-namespace BoardHoard.Components.Account
+namespace BoardHoard.Components.Account;
+
+public class IdentityUserAccessor
 {
-    internal sealed class IdentityUserAccessor(UserManager<ApplicationUser> userManager, IdentityRedirectManager redirectManager)
+    private readonly AuthenticationStateProvider _authStateProvider;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    public IdentityUserAccessor(AuthenticationStateProvider authStateProvider,
+                                UserManager<ApplicationUser> userManager)
     {
-        public async Task<ApplicationUser> GetRequiredUserAsync(HttpContext context)
-        {
-            var user = await userManager.GetUserAsync(context.User);
+        _authStateProvider = authStateProvider;
+        _userManager = userManager;
+    }
 
-            if (user is null)
-            {
-                redirectManager.RedirectToWithStatus("Account/InvalidUser", $"Error: Unable to load user with ID '{userManager.GetUserId(context.User)}'.", context);
-            }
+    public async Task<ApplicationUser> GetRequiredUserAsync()
+    {
+        var authState = await _authStateProvider.GetAuthenticationStateAsync();
+        var principal = authState.User;
 
-            return user;
-        }
+        if (principal?.Identity is null || !principal.Identity.IsAuthenticated)
+            throw new InvalidOperationException("No authenticated user is available.");
+
+        var user = await _userManager.GetUserAsync(principal);
+        if (user is null)
+            throw new InvalidOperationException("Authenticated user not found in UserManager.");
+
+        return user;
+    }
+
+    public async Task<string> GetRequiredUserIdAsync()
+    {
+        var user = await GetRequiredUserAsync();
+        return user.Id!;
     }
 }

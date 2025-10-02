@@ -1,0 +1,335 @@
+@page "/u/{name}"
+@page "/mypage"
+@using BoardHoard.Services
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using BoardHoard.Data
+@using System.ComponentModel.DataAnnotations
+@using System.Security.Claims
+@inject ApplicationDbContext Db
+@inject NavigationManager Nav
+@inject AuthenticationStateProvider Auth
+@inject UserManager<ApplicationUser> UserManager
+@rendermode InteractiveServer
+@inject IBoardGameService BoardSvc
+@inject ICardGameService CardSvc
+
+<PageTitle>@(isOwner ? "My Page" : ($"{profile?.DisplayName} • Profile"))</PageTitle>
+
+@if (loading)
+{
+    <div>Loading…</div>
+}
+else if (profile is null)
+{
+    <div class="alert alert-warning">User not found.</div>
+}
+else
+{
+    <div class="container py-4">
+        <div class="d-flex align-items-center gap-3 mb-3">
+            <img src="@(profile.PhotoUrl ?? "/images/avatar-placeholder.png")" alt="@profile.DisplayName" style="width:96px;height:96px;object-fit:cover;border-radius:50%" />
+            <div class="flex-grow-1">
+                <h2 class="mb-1">@profile.DisplayName</h2>
+                @if (isOwner)
+                {
+                    <a href="/Account/Manage" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil-square"></i> Edit Profile</a>
+                }
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-12 col-lg-8">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">About</h5>
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">Age</dt>
+                            <dd class="col-sm-8">@(profile.Age?.ToString() ?? "—")</dd>
+                            <dt class="col-sm-4">Favorite Mechanic</dt>
+                            <dd class="col-sm-8">@(!string.IsNullOrWhiteSpace(profile.FavoriteMechanic) ? profile.FavoriteMechanic : "—")</dd>
+                            <dt class="col-sm-4">Bio</dt>
+                            <dd class="col-sm-8">@(!string.IsNullOrWhiteSpace(profile.Bio) ? profile.Bio : "—")</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Top Games</h5>
+                        @if (topGames?.Count > 0)
+                        {
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var tg in topGames)
+                                {
+                                    var icon = string.Equals(tg.kind, "card", StringComparison.OrdinalIgnoreCase) ? "🃏" : "🧩";
+                                    <li class="mb-1">
+                                        @icon
+                                        <a href="@GetGameUrl(tg)" class="link-body-emphasis">@tg.title</a>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <div class="text-muted">—</div>
+                        }
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Messages</h5>
+
+                        @if (canPost)
+                        {
+                            <EditForm Model="messageInput" OnValidSubmit="PostMessageAsync">
+                                <DataAnnotationsValidator />
+                                <div class="input-group mb-3">
+                                    <InputTextArea class="form-control" @bind-Value="messageInput.Body" rows="2" placeholder="Leave a message…" />
+                                    <button class="btn btn-primary" type="submit" disabled="@posting"><i class="bi bi-send"></i></button>
+                                </div>
+                                <ValidationMessage For="() => messageInput.Body" class="text-danger" />
+                            </EditForm>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info">Sign in to leave a message.</div>
+                        }
+
+                        @if (messages.Count == 0)
+                        {
+                            <div class="text-muted">No messages yet.</div>
+                        }
+                        else
+                        {
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var m in messages)
+                                {
+                                    var author = GetProfileByUserId(m.AuthorUserId);
+                                    <li class="mb-3">
+                                        <div class="d-flex gap-2">
+                                            <a class="avatar" href=@($"/u/{Uri.EscapeDataString(author?.DisplayName ?? "user")}")>
+                                                <img src="@(author?.PhotoUrl ?? "/images/avatar-placeholder.png")" style="width:32px;height:32px;border-radius:50%;object-fit:cover" />
+                                            </a>
+                                            <div>
+                                                <div class="small text-muted">from <a href=@($"/u/{Uri.EscapeDataString(author?.DisplayName ?? "user")}")>@(author?.DisplayName ?? "Unknown")</a> • @m.CreatedUtc.ToLocalTime().ToString("g")</div>
+                                                <div>@m.Body</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-4">
+                <div class="alert alert-secondary">
+                    <div class="d-flex align-items-center gap-2"><i class="bi bi-info-circle"></i><strong>Tip</strong></div>
+                    <div class="mt-2 mb-0">Click a reviewer's name anywhere to view their public profile.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string? name { get; set; }
+    private List<TopGameItem> topGames = new();
+    private bool loading = true;
+    private bool isOwner = false;
+    private bool canPost = false;
+    private bool posting = false;
+    private UserProfile? profile;
+    private List<WallMessage> messages = new();
+
+    private class MessageInput
+    {
+        [Required, StringLength(1000, MinimumLength = 1)]
+        public string Body { get; set; } = string.Empty;
+    }
+    private MessageInput messageInput = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        loading = true;
+        var auth = await Auth.GetAuthenticationStateAsync();
+        var user = auth.User;
+        var isAuthed = user?.Identity?.IsAuthenticated == true;
+        canPost = isAuthed;
+
+        string? targetName = name;
+        if (Nav.Uri.EndsWith("/mypage", StringComparison.OrdinalIgnoreCase))
+        {
+            if (!isAuthed)
+            {
+                Nav.NavigateTo("/Account/Login");
+                return;
+            }
+            var me = await UserManager.GetUserAsync(user);
+            if (me is null)
+            {
+                Nav.NavigateTo("/");
+                return;
+            }
+            // Load or create profile by current user
+            profile = await Db.UserProfiles.FirstOrDefaultAsync(p => p.UserId == me.Id);
+            if (profile is null)
+            {
+                profile = new UserProfile
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = me.Id,
+                    DisplayName = me.DisplayName ?? me.UserName ?? "Unknown",
+                    PhotoUrl = me.PhotoUrl
+                };
+                Db.UserProfiles.Add(profile);
+                await Db.SaveChangesAsync();
+            }
+            isOwner = true;
+        }
+        else
+        {
+            // Find by DisplayName (preferred), else by UserName
+            if (!string.IsNullOrWhiteSpace(targetName))
+            {
+                var lowered = targetName.Trim();
+                profile = await Db.UserProfiles.FirstOrDefaultAsync(p => p.DisplayName == lowered) 
+                       ?? await (from u in Db.Users
+                                 where u.UserName == lowered
+                                 select new UserProfile {
+                                     Id = Guid.NewGuid(),
+                                     UserId = u.Id,
+                                     DisplayName = u.DisplayName ?? u.UserName!,
+                                     PhotoUrl = u.PhotoUrl
+                                 }).FirstOrDefaultAsync();
+
+                // If we constructed from user, persist a UserProfile for future use
+                if (profile != null && !await Db.UserProfiles.AnyAsync(p => p.UserId == profile.UserId))
+                {
+                    Db.UserProfiles.Add(profile);
+                    await Db.SaveChangesAsync();
+                }
+
+                // Determine ownership
+                if (isAuthed)
+                {
+                    var myId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    isOwner = myId == profile?.UserId;
+                }
+            }
+        }
+
+        // Load messages
+        if (profile != null)
+        {
+            await LoadTopGamesAsync(profile.TopGamesJson);
+
+            messages = await Db.WallMessages
+                .Where(m => m.OwnerUserId == profile.UserId)
+                .OrderByDescending(m => m.CreatedUtc)
+                .Take(100)
+                .ToListAsync();
+        }
+
+        loading = false;
+    }
+
+    private async Task LoadTopGamesAsync(string? json)
+    {
+        topGames = TopGamesHelper.ParseJson(json);
+
+        // If any items are missing a title (older rows), resolve lazily
+        foreach (var tg in topGames.Where(t => string.IsNullOrWhiteSpace(t.title)))
+        {
+            tg.title = await ResolveTitleAsync(tg.kind, tg.id);
+        }
+
+        // keep max 3, dedup just in case
+        topGames = topGames
+            .GroupBy(t => $"{t.kind}|{t.id}")
+            .Select(g => g.First())
+            .Take(3)
+            .ToList();
+    }
+
+    private async Task<string> ResolveTitleAsync(string kind, int id)
+    {
+        try
+        {
+            if (string.Equals(kind, "board", StringComparison.OrdinalIgnoreCase))
+            {
+                var g = await BoardSvc.GetByIdAsync(id);
+                return g?.Title ?? $"Board Game #{id}";
+            }
+            else if (string.Equals(kind, "card", StringComparison.OrdinalIgnoreCase))
+            {
+                var g = await CardSvc.GetByIdAsync(id);
+                return g?.Title ?? $"Card Game #{id}";
+            }
+            return $"{kind} #{id}";
+        }
+        catch
+        {
+            return $"{kind} #{id}";
+        }
+    }
+
+    private async Task PostMessageAsync()
+    {
+        if (!canPost || profile is null) return;
+        posting = true;
+        try
+        {
+            var auth = await Auth.GetAuthenticationStateAsync();
+            var user = auth.User;
+            var myId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrWhiteSpace(myId)) return;
+
+            var body = (messageInput.Body ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(body)) return;
+
+            var m = new WallMessage
+            {
+                OwnerUserId = profile.UserId,
+                AuthorUserId = myId,
+                Body = body,
+                CreatedUtc = DateTime.UtcNow
+            };
+            Db.WallMessages.Add(m);
+            await Db.SaveChangesAsync();
+            messageInput = new();
+            messages.Insert(0, m);
+        }
+        finally { posting = false; }
+    }
+
+    private string GetGameUrl(TopGameItem tg)
+    => string.Equals(tg.kind, "card", StringComparison.OrdinalIgnoreCase)
+        ? $"/game/card/{tg.id}"
+        : $"/game/board/{tg.id}";
+
+    private UserProfile? GetProfileByUserId(string uid)
+    {
+        var p = Db.UserProfiles.FirstOrDefault(p => p.UserId == uid);
+        if (p != null) return p;
+        var u = Db.Users.FirstOrDefault(u => u.Id == uid);
+        if (u == null) return null;
+        p = new UserProfile
+        {
+            Id = Guid.NewGuid(),
+            UserId = uid,
+            DisplayName = u.DisplayName ?? u.UserName ?? "Unknown",
+            PhotoUrl = u.PhotoUrl
+        };
+        try
+        {
+            Db.UserProfiles.Add(p);
+            Db.SaveChanges();
+        }
+        catch { /* ignore duplicate create */ }
+        return p;
+    }
+}

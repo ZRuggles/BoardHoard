@@ -2,12 +2,22 @@
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Forms
 @inject BoardHoard.Services.IImageService ImageSvc
+@inject BoardHoard.Services.IBoardGameService BoardSvc
+@inject BoardHoard.Services.ICardGameService CardSvc
 
 <EditForm Model="Model"
           OnValidSubmit="HandleSubmit"
           FormName="@FormName">
     <DataAnnotationsValidator />
     <div class="row g-3">
+        <div class="col-md-4">
+            <label class="form-label">Game Type</label>
+            <select class="form-select" @bind="Kind" @bind:after="OnKindChanged">
+                <option value="board">Board Game</option>
+                <option value="card">Card Game</option>
+            </select>
+        </div>
+
         <div class="col-md-6">
             <label class="form-label">Title</label>
             <InputText class="form-control" @bind-Value="Model.Title" />
@@ -15,21 +25,21 @@
 
         <div class="col-md-3">
             <label class="form-label">Year</label>
-            <InputNumber class="form-control" @bind-Value="Model.Year" />
+            <InputNumber class="form-control" @bind-Value="Model.Year" min="0" />
         </div>
 
         <div class="col-md-3">
             <label class="form-label">Age Rating</label>
-            <InputNumber class="form-control" @bind-Value="Model.ageRating" />
+            <InputNumber class="form-control" @bind-Value="Model.ageRating" min="0" />
         </div>
 
         <div class="col-md-3">
             <label class="form-label">Min Players</label>
-            <InputNumber class="form-control" @bind-Value="Model.MinPlayers" />
+            <InputNumber class="form-control" @bind-Value="Model.MinPlayers" min="1" />
         </div>
         <div class="col-md-3">
             <label class="form-label">Max Players</label>
-            <InputNumber class="form-control" @bind-Value="Model.MaxPlayers" />
+            <InputNumber class="form-control" @bind-Value="Model.MaxPlayers" min="1" />
         </div>
 
         <div class="col-md-6">
@@ -38,13 +48,13 @@
                 <InputText class="form-control" @bind-Value="Model.ImageUrl" />
                 <label class="btn btn-outline-light">
                     <i class="bi bi-upload"></i> Upload
-                    <InputFile OnChange="OnFileSelected" accept="image/*" class="d-none" />
+                    <InputFile OnChange="OnFileChange" accept=".png,.jpg,.jpeg,.webp" class="d-none" />
                 </label>
             </div>
-            @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+            @if (!string.IsNullOrWhiteSpace(previewUrl ?? Model.ImageUrl))
             {
                 <div class="mt-2">
-                    <img src="@Model.ImageUrl" alt="preview" style="max-width:160px; border-radius:8px; border:1px solid rgba(255,255,255,.1)" />
+                    <img class="cover-preview" src="@((previewUrl ?? Model.ImageUrl)!)" alt="Cover" />
                 </div>
             }
         </div>
@@ -61,21 +71,50 @@
 
         <div class="col-md-4">
             <label class="form-label">Rarity (0–100)</label>
-            <InputNumber class="form-control" @bind-Value="Model.RarityScore" />
+            <InputNumber class="form-control" @bind-Value="Model.RarityScore" min="0" max="100" />
         </div>
         <div class="col-md-4">
             <label class="form-label">Sentimental (0–100)</label>
-            <InputNumber class="form-control" @bind-Value="Model.SentimentalScore" />
+            <InputNumber class="form-control" @bind-Value="Model.SentimentalScore" min="0" max="100" />
         </div>
         @if (Kind == "card")
         {
             <div class="col-md-4">
                 <label class="form-label">Card Count <span class="text-muted">(optional)</span></label>
-                <InputNumber class="form-control" @bind-Value="CardCountProxy" />
+                <InputNumber class="form-control" @bind-Value="CardCountProxy" min="0" />
                 <div class="form-text">Leave blank if unknown.</div>
             </div>
         }
 
+        <!-- ===================== TAG PICKER ===================== -->
+        <div class="col-12">
+            <div class="card p-3">
+                <h5 class="mb-2">Game Tags</h5>
+                <div class="row g-3">
+                    @foreach (var group in TagCatalog.Groups)
+                    {
+                        <div class="col-12 col-md-6">
+                            <label class="form-label text-uppercase small fw-bold">@group.Key</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var (value, label, hint) in group.Options)
+                                {
+                                    <button type="button"
+                                            class="@BtnClass(group.Key, value)"
+                                            title="@hint"
+                                            @onclick="() => Pick(group.Key, value)">
+                                        @label
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="form-text mt-2">
+                    Pick <strong>one</strong> option in each category. These power the “choose your fighter” picker.
+                </div>
+            </div>
+        </div>
+        <!-- ====================================================== -->
 
         <div class="col-12 d-flex gap-2 mt-2">
             <button class="btn btn-primary" type="submit" disabled="@Saving">@SubmitText</button>
@@ -97,8 +136,15 @@
     [Parameter] public bool ShowCancel { get; set; } = true;
     [Parameter] public string FormName { get; set; } = "game-form";
 
-    // NEW: nullable proxy so the field can be blank without validation errors
+    private IBrowserFile? _pendingFile;
+
     private long? CardCountProxy { get; set; }
+    private string? previewUrl;
+    private string? _oldKind;
+    private int? _oldId;
+
+    // tag selection map: key -> chosen value
+    private Dictionary<string, string> tagSelection = new(StringComparer.OrdinalIgnoreCase);
 
     protected override void OnParametersSet()
     {
@@ -110,24 +156,178 @@
         {
             CardCountProxy = null;
         }
+
+        // initialize tag selections from model (handles null/empty)
+        tagSelection = TagCatalog.ToSelectionMap(Model.Tags ?? new());
+
+        // ensure every group has a selection so the UI shows a state
+        foreach (var g in TagCatalog.Groups)
+            if (!tagSelection.ContainsKey(g.Key))
+                tagSelection[g.Key] = g.Options.First().Value; // default to first option
     }
 
-    private async Task HandleSubmit()
+    async Task HandleSubmit()
     {
-        // copy proxy back into the model before submit
+        // Normalize numeric bounds
+        Model.Year = Math.Max(0, Model.Year);
+        Model.ageRating = (Model.ageRating is int ar && ar < 0) ? 0 : Model.ageRating;
+        Model.MinPlayers = Math.Max(1, Model.MinPlayers);
+        Model.MaxPlayers = Math.Max(1, Model.MaxPlayers);
+        Model.RarityScore = Math.Clamp(Model.RarityScore, 0, 100);
+        Model.SentimentalScore = Math.Clamp(Model.SentimentalScore, 0, 100);
+
         if (Kind == "card" && Model is CardGame cg)
         {
             cg.cardCount = CardCountProxy ?? 0;
         }
+
+        // ⬇️ apply tag selections to the model BEFORE saving
+        Model.Tags = TagCatalog.FromSelectionMap(tagSelection);
+
+        if (_pendingFile is not null)
+        {
+            var result = await ImageSvc.UploadAsync(_pendingFile);
+            if (result is not null)
+            {
+                Model.ImageUrl = result.Url;
+                if (Model is BoardGame bgg)
+                {
+                    bgg.ImageId = result.ImageId;
+                }
+                else if (Model is CardGame cgg)
+                {
+                    cgg.ImageId = result.ImageId;
+                }
+            }
+        }
+
+        var switchedKind = _oldKind is not null && _oldKind != Kind && _oldId is int oldIdVal;
+
+        switch (Model)
+        {
+            case BoardGame bg:
+                if (bg.Id == 0)
+                {
+                    var created = await BoardSvc.CreateAsync(bg);
+                    if (created is not null)
+                    {
+                        bg.Id = created.Id;
+                        bg.ImageUrl = string.IsNullOrWhiteSpace(bg.ImageUrl) ? created.ImageUrl : bg.ImageUrl;
+                        bg.ImageId = bg.ImageId ?? created.ImageId;
+                    }
+                }
+                else await BoardSvc.UpdateAsync(bg.Id, bg);
+                break;
+
+            case CardGame crg:
+                if (crg.Id == 0)
+                {
+                    var created = await CardSvc.CreateAsync(crg);
+                    if (created is not null)
+                    {
+                        crg.Id = created.Id;
+                        crg.ImageUrl = string.IsNullOrWhiteSpace(crg.ImageUrl) ? created.ImageUrl : crg.ImageUrl;
+                        crg.ImageId = crg.ImageId ?? created.ImageId;
+                    }
+                }
+                else await CardSvc.UpdateAsync(crg.Id, crg);
+                break;
+        }
+
+        if (switchedKind && _oldId is int oldId)
+        {
+            // Best-effort delete of the old entity of the previous kind
+            if (_oldKind == "board")
+                await BoardSvc.DeleteAsync(oldId);
+            else if (_oldKind == "card")
+                await CardSvc.DeleteAsync(oldId);
+
+            // Clear tracking so we don't repeatedly delete
+            _oldKind = null;
+            _oldId = null;
+        }
+
         await OnSubmit.InvokeAsync();
     }
 
-    private async Task OnFileSelected(InputFileChangeEventArgs e)
+    async Task OnFileChange(InputFileChangeEventArgs e)
     {
-        var file = e.File;
-        if (file is null) return;
-        var url = await ImageSvc.UploadAsync(file, Model?.Title);
-        if (!string.IsNullOrWhiteSpace(url))
-            Model.ImageUrl = url; // relative URL served by Blazor app
+        _pendingFile = e.File;
+        // Build a local preview data URL (limit size to 2MB)
+        using var stream = _pendingFile.OpenReadStream(maxAllowedSize: 2 * 1024 * 1024);
+        using var ms = new MemoryStream();
+        await stream.CopyToAsync(ms);
+        var base64 = Convert.ToBase64String(ms.ToArray());
+        previewUrl = $"data:{_pendingFile.ContentType};base64,{base64}";
     }
+
+    private async Task OnKindChanged()
+    {
+        // Switch underlying model while preserving shared fields
+        if (Kind == "card" && Model is not CardGame)
+        {
+            _oldKind = "board";
+            _oldId = Model.Id;
+            var newModel = new CardGame
+                {
+                    Id = 0, // force create for new kind
+                    Title = Model.Title,
+                    Year = Model.Year,
+                    MinPlayers = Model.MinPlayers,
+                    MaxPlayers = Model.MaxPlayers,
+                    ImageId = Model.ImageId,
+                    ImageUrl = Model.ImageUrl,
+                    Publisher = Model.Publisher,
+                    Description = Model.Description,
+                    ageRating = Model.ageRating,
+                    RarityScore = Model.RarityScore,
+                    SentimentalScore = Model.SentimentalScore,
+                    CreatedByUserId = Model.CreatedByUserId,
+                    // carry tags across type switches
+                    Tags = new List<string>(Model.Tags ?? new())
+                };
+            Model = newModel;
+            CardCountProxy = newModel.cardCount == 0 ? (long?)null : newModel.cardCount;
+        }
+        else if (Kind == "board" && Model is not BoardGame)
+        {
+            _oldKind = "card";
+            _oldId = Model.Id;
+            var newModel = new BoardGame
+                {
+                    Id = 0, // force create for new kind
+                    Title = Model.Title,
+                    Year = Model.Year,
+                    MinPlayers = Model.MinPlayers,
+                    MaxPlayers = Model.MaxPlayers,
+                    ImageId = Model.ImageId,
+                    ImageUrl = Model.ImageUrl,
+                    Publisher = Model.Publisher,
+                    Description = Model.Description,
+                    ageRating = Model.ageRating,
+                    RarityScore = Model.RarityScore,
+                    SentimentalScore = Model.SentimentalScore,
+                    CreatedByUserId = Model.CreatedByUserId,
+                    // carry tags across type switches
+                    Tags = new List<string>(Model.Tags ?? new())
+                };
+            Model = newModel;
+            CardCountProxy = null;
+        }
+
+        // refresh selection map from the new model
+        tagSelection = TagCatalog.ToSelectionMap(Model.Tags ?? new());
+        foreach (var g in TagCatalog.Groups)
+            if (!tagSelection.ContainsKey(g.Key))
+                tagSelection[g.Key] = g.Options.First().Value;
+
+        StateHasChanged();
+    }
+
+    private void Pick(string key, string value) => tagSelection[key] = value;
+
+    private string BtnClass(string key, string value)
+        => (tagSelection.TryGetValue(key, out var sel) && sel == value)
+            ? "btn btn-sm btn-primary"
+            : "btn btn-sm btn-outline-secondary";
 }

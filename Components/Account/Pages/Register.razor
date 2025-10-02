@@ -7,6 +7,7 @@
 @using Microsoft.AspNetCore.WebUtilities
 @using Microsoft.AspNetCore.Components.Forms
 @using BoardHoard.Data
+@using Microsoft.EntityFrameworkCore
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
@@ -15,6 +16,7 @@
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject ApplicationDbContext Db
 
 <PageTitle>Register</PageTitle>
 
@@ -40,6 +42,13 @@
                         <label for="email" class="form-label">Email</label>
                         <InputText id="email" class="form-control" @bind-Value="Input.Email" autocomplete="username" aria-required="true" />
                         <ValidationMessage For="() => Input.Email" class="text-danger small" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="display" class="form-label">Display name</label>
+                        <InputText id="display" class="form-control" @bind-Value="Input.DisplayName" aria-required="true" />
+                        <div class="form-text">This will be shown publicly on your reviews and profile.</div>
+                        <ValidationMessage For="() => Input.DisplayName" class="text-danger small" />
                     </div>
 
                     <div class="mb-3">
@@ -112,6 +121,20 @@
 
     public async Task RegisterUser()
     {
+        // Server-side validations for DisplayName
+        if (Input.DisplayName.Equals(Input.Email, StringComparison.OrdinalIgnoreCase) ||
+            new EmailAddressAttribute().IsValid(Input.DisplayName))
+        {
+            identityErrors = new[] { new IdentityError { Description = "Display name cannot be an email." } };
+            return;
+        }
+        var exists = await Db.UserProfiles.AnyAsync(p => p.DisplayName == Input.DisplayName);
+        if (exists)
+        {
+            identityErrors = new[] { new IdentityError { Description = "Display name is already taken." } };
+            return;
+        }
+
         var user = CreateUser();
 
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
@@ -124,6 +147,15 @@
             identityErrors = result.Errors;
             return;
         }
+
+        // Create profile row
+        Db.UserProfiles.Add(new UserProfile
+        {
+            UserId = user.Id,
+            DisplayName = Input.DisplayName,
+            PhotoUrl = null
+        });
+        await Db.SaveChangesAsync();
 
         Logger.LogInformation("User created a new account with password.");
 
@@ -179,6 +211,9 @@
     {
         [Required, EmailAddress]
         public string Email { get; set; } = "";
+
+        [Required, StringLength(32, ErrorMessage = "Display name must be between {2} and {1} characters.", MinimumLength = 3)]
+        public string DisplayName { get; set; } = "";
 
         [Required, StringLength(100, ErrorMessage = "The {0} must be between {2} and {1} characters.", MinimumLength = 6)]
         [DataType(DataType.Password)]

@@ -3,75 +3,436 @@
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Identity
 @using BoardHoard.Data
-
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.EntityFrameworkCore
+@using System.Text.Json
+@using BoardHoard.Services
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
 @inject IdentityUserAccessor UserAccessor
 @inject IdentityRedirectManager RedirectManager
+@inject BoardHoard.Services.IImageService ImageSvc
+@inject ApplicationDbContext Db
+@inject IBoardGameService BoardSvc
+@inject ICardGameService CardSvc
+@rendermode InteractiveServer
 
 <PageTitle>Profile</PageTitle>
 
 <h3>Profile</h3>
 <StatusMessage />
 
-<div class="row">
-    <div class="col-md-6">
-        <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
+<div class="row g-4">
+    <div class="col-md-8 col-lg-7">
+        <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync">
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert" />
+
             <div class="form-floating mb-3">
-                <input type="text" value="@username" class="form-control" placeholder="Please choose your username." disabled />
+                <input type="text" id="username" value="@username" class="form-control" placeholder="Please choose your username." disabled >
                 <label for="username" class="form-label">Username</label>
             </div>
+            <div>
+                <label for="username" class="form-label">Username</label>
+            </div>
+
             <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
-                <label for="phone-number" class="form-label">Phone number</label>
+                <InputText @bind-Value="Input.DisplayName" class="form-control" placeholder="Display name" />
+                <label class="form-label">Display name</label>
+                <ValidationMessage For="() => Input.DisplayName" class="text-danger" />
+            </div>
+
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="Input.PhoneNumber" class="form-control" placeholder="Phone number" />
+                <label class="form-label">Phone number</label>
                 <ValidationMessage For="() => Input.PhoneNumber" class="text-danger" />
             </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <InputNumber @bind-Value="Input.Age" class="form-control" placeholder="Age" />
+                        <label class="form-label">Age</label>
+                        <ValidationMessage For="() => Input.Age" class="text-danger" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <InputText @bind-Value="Input.FavoriteMechanic" class="form-control" placeholder="Favorite mechanic" />
+                        <label class="form-label">Favorite Mechanic</label>
+                        <ValidationMessage For="() => Input.FavoriteMechanic" class="text-danger" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3 mt-3">
+                <label class="form-label">Bio</label>
+                <InputTextArea @bind-Value="Input.Bio" class="form-control" rows="3" />
+                <ValidationMessage For="() => Input.Bio" class="text-danger" />
+            </div>
+
+            <div class="mb-2">
+                <label class="form-label">Top 3 Games</label>
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <select class="form-select" @bind="Input.TopGame1">
+                            <option value="">— Select —</option>
+                            @foreach (var g in allGames)
+                            {
+                                <option value="@g.Value">@g.Label</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select" @bind="Input.TopGame2">
+                            <option value="">— Select —</option>
+                            @foreach (var g in allGames)
+                            {
+                                <option value="@g.Value">@g.Label</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select" @bind="Input.TopGame3">
+                            <option value="">— Select —</option>
+                            @foreach (var g in allGames)
+                            {
+                                <option value="@g.Value">@g.Label</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-text">You can pick up to three. Board and card games are listed together.</div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Profile photo</label>
+                <div class="d-flex align-items-center gap-3">
+                    <img src="@(previewUrl ?? user?.PhotoUrl ?? PlaceholderAvatar)" alt="Profile photo" style="width:64px;height:64px;object-fit:cover;border-radius:50%" />
+                    <label class="btn btn-outline-secondary mb-0">
+                        <i class="bi bi-upload"></i> Choose photo
+                        <InputFile OnChange="OnFileChange" accept=".png,.jpg,.jpeg,.webp" class="d-none" />
+                    </label>
+                </div>
+                <div class="form-text">PNG/JPG/WEBP up to 5MB.</div>
+            </div>
+
+            <button type="submit" class="w-100 btn btn-outline-secondary" disabled="@isLoading">
+                @if (isLoading)
+                {
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    <text>Saving...</text>
+                }
+                else
+                {
+                    <text>Save</text>
+                }
+            </button>
         </EditForm>
     </div>
 </div>
 
 @code {
-    private ApplicationUser user = default!;
+    private ApplicationUser user = new();
     private string? username;
     private string? phoneNumber;
+    private IBrowserFile? _pendingPhoto;
+    private string? previewUrl;
+    private bool isLoading = false;
+    private string? statusMessage;
+
+    private class GameOption
+    {
+        public string Value { get; set; } = "";
+        public string Label { get; set; } = "";
+    }
+    private List<GameOption> allGames = new();
 
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
-    [SupplyParameterFromForm]
     private InputModel Input { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
-        user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+        user = await UserAccessor.GetRequiredUserAsync();
         username = await UserManager.GetUserNameAsync(user);
         phoneNumber = await UserManager.GetPhoneNumberAsync(user);
 
-        Input.PhoneNumber ??= phoneNumber;
+        // Initialize Input with current values
+        Input = new InputModel
+            {
+                PhoneNumber = phoneNumber,
+                DisplayName = user.DisplayName ?? username
+            };
+
+        // Load existing UserProfile for extended fields
+        var up = await Db.UserProfiles.FirstOrDefaultAsync(p => p.UserId == user.Id);
+        if (up != null)
+        {
+            Input.Age = up.Age;
+            Input.FavoriteMechanic = up.FavoriteMechanic;
+            Input.Bio = up.Bio;
+
+            // Parse top games
+            if (!string.IsNullOrWhiteSpace(up.TopGamesJson))
+            {
+                try
+                {
+                    // Parse top games
+                    var items = TopGamesHelper.ParseJson(up.TopGamesJson);
+                    Input.TopGame1 = items.ElementAtOrDefault(0) is { } t1 ? $"{t1.kind}|{t1.id}" : null;
+                    Input.TopGame2 = items.ElementAtOrDefault(1) is { } t2 ? $"{t2.kind}|{t2.id}" : null;
+                    Input.TopGame3 = items.ElementAtOrDefault(2) is { } t3 ? $"{t3.kind}|{t3.id}" : null;
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error parsing top games JSON: {ex.Message}");
+                }
+            }
+        }
+
+        // Load games for selectors
+        await LoadGamesAsync();
+    }
+
+    private async Task LoadGamesAsync()
+    {
+        try
+        {
+            var boards = await BoardSvc.GetAllAsync();
+            var cards = await CardSvc.GetAllAsync();
+
+            allGames = new List<GameOption>();
+
+            if (boards != null)
+            {
+                allGames.AddRange(boards.OrderBy(g => g.Title)
+    .Select(g => new GameOption { Value = $"board|{g.Id}", Label = $"🧩 {g.Title}" }));
+            }
+
+            if (cards != null)
+            {
+                allGames.AddRange(cards.OrderBy(g => g.Title)
+    .Select(g => new GameOption { Value = $"card|{g.Id}", Label = $"🃏 {g.Title}" }));
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error loading games: {ex.Message}");
+            allGames = new();
+        }
     }
 
     private async Task OnValidSubmitAsync()
     {
-        if (Input.PhoneNumber != phoneNumber)
+        try
         {
-            var setPhoneResult = await UserManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-            if (!setPhoneResult.Succeeded)
+            var identityChanged = false;
+
+            // Update display name if changed
+            if (!string.Equals(Input.DisplayName?.Trim(), user.DisplayName, StringComparison.Ordinal))
             {
-                RedirectManager.RedirectToCurrentPageWithStatus("Error: Failed to set phone number.", HttpContext);
+                user.DisplayName = Input.DisplayName?.Trim();
+                identityChanged = true;
+            }
+
+            // Update phone number if changed
+            if (!string.Equals(Input.PhoneNumber?.Trim(), phoneNumber, StringComparison.Ordinal))
+            {
+                var setPhoneResult = await UserManager.SetPhoneNumberAsync(user, Input.PhoneNumber?.Trim());
+                if (!setPhoneResult.Succeeded)
+                {
+                    RedirectManager.RedirectToCurrentPageWithStatus("Error: Failed to set phone number.", HttpContext);
+                    return;
+                }
+            }
+
+            // Upload and set profile photo if provided
+            if (_pendingPhoto is not null)
+            {
+                var result = await ImageSvc.UploadAsync(_pendingPhoto);
+                if (result is not null)
+                {
+                    user.PhotoUrl = result.Url;
+                    identityChanged = true;
+                }
+            }
+
+            // Update Identity user if needed
+            if (identityChanged)
+            {
+                var updateResult = await UserManager.UpdateAsync(user);
+                if (!updateResult.Succeeded)
+                {
+                    var errors = string.Join("; ", updateResult.Errors.Select(e => e.Description));
+                    RedirectManager.RedirectToCurrentPageWithStatus($"Error: {errors}", HttpContext);
+                    return;
+                }
+            }
+
+            // Always sync UserProfile (this handles the extended fields)
+            await SyncUserProfileAsync();
+
+            await SignInManager.RefreshSignInAsync(user);
+            RedirectManager.RedirectToCurrentPageWithStatus("Your profile has been updated", HttpContext);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in OnValidSubmitAsync: {ex.Message}");
+            RedirectManager.RedirectToCurrentPageWithStatus($"Error: {ex.Message}", HttpContext);
+        }
+    }
+
+    private async Task SyncUserProfileAsync()
+    {
+        try
+        {
+            // Find existing UserProfile
+            var userProfile = await Db.UserProfiles.FirstOrDefaultAsync(up => up.UserId == user.Id);
+
+            var tops = new List<TopGameItem>();
+            var gameSelections = new[] { Input.TopGame1, Input.TopGame2, Input.TopGame3 };
+
+            foreach (var selection in gameSelections.Where(v => !string.IsNullOrWhiteSpace(v)))
+            {
+                var parts = selection!.Split('|', 2, StringSplitOptions.TrimEntries);
+                if (parts.Length == 2 && int.TryParse(parts[1], out var gameId))
+                {
+                    var kind = parts[0].ToLowerInvariant(); // "board" | "card"
+                    var title = await ResolveTitleAsync(kind, gameId);
+                    tops.Add(new TopGameItem { kind = kind, id = gameId, title = title });
+                }
+            }
+
+            var topJson = TopGamesHelper.BuildJson(tops);
+
+            if (userProfile == null)
+            {
+                // Create new UserProfile
+                userProfile = new UserProfile
+                    {
+                        Id = Guid.NewGuid(),
+                        UserId = user.Id,
+                        DisplayName = user.DisplayName ?? user.UserName ?? "",
+                        PhotoUrl = user.PhotoUrl,
+                        Age = Input.Age,
+                        FavoriteMechanic = Input.FavoriteMechanic?.Trim(),
+                        Bio = Input.Bio?.Trim(),
+                        TopGamesJson = topJson
+                    };
+                Db.UserProfiles.Add(userProfile);
+            }
+            else
+            {
+                // Update existing UserProfile
+                userProfile.DisplayName = user.DisplayName ?? user.UserName ?? "";
+                userProfile.PhotoUrl = user.PhotoUrl;
+                userProfile.Age = Input.Age;
+                userProfile.FavoriteMechanic = Input.FavoriteMechanic?.Trim();
+                userProfile.Bio = Input.Bio?.Trim();
+                userProfile.TopGamesJson = topJson;
+
+                // Explicitly mark as modified
+                Db.Entry(userProfile).State = EntityState.Modified;
+            }
+
+            await Db.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in SyncUserProfileAsync: {ex.Message}");
+            throw; // Re-throw to be handled by calling method
+        }
+    }
+
+    private async Task<string> ResolveTitleAsync(string kind, int id)
+    {
+        try
+        {
+            if (string.Equals(kind, "board", StringComparison.OrdinalIgnoreCase))
+            {
+                var game = await BoardSvc.GetByIdAsync(id);
+                return game?.Title ?? $"Board Game #{id}";
+            }
+            else if (string.Equals(kind, "card", StringComparison.OrdinalIgnoreCase))
+            {
+                var game = await CardSvc.GetByIdAsync(id);
+                return game?.Title ?? $"Card Game #{id}";
+            }
+            return $"{kind} #{id}";
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error resolving title for {kind} #{id}: {ex.Message}");
+            return $"{kind} #{id}";
+        }
+    }
+
+    private async Task OnFileChange(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            _pendingPhoto = e.File;
+
+            if (_pendingPhoto != null)
+            {
+                // Build a local preview data URL (limit size to 2MB for preview)
+                using var stream = _pendingPhoto.OpenReadStream(maxAllowedSize: 2 * 1024 * 1024);
+                using var ms = new MemoryStream();
+                await stream.CopyToAsync(ms);
+                var base64 = Convert.ToBase64String(ms.ToArray());
+                previewUrl = $"data:{_pendingPhoto.ContentType};base64,{base64}";
+                StateHasChanged(); // Force UI update for preview
             }
         }
-
-        await SignInManager.RefreshSignInAsync(user);
-        RedirectManager.RedirectToCurrentPageWithStatus("Your profile has been updated", HttpContext);
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error in OnFileChange: {ex.Message}");
+            // Could show an error message to user here
+        }
     }
 
     private sealed class InputModel
     {
+        [StringLength(50, MinimumLength = 2)]
+        [Display(Name = "Display Name")]
+        public string? DisplayName { get; set; }
+
         [Phone]
         [Display(Name = "Phone number")]
         public string? PhoneNumber { get; set; }
+
+        [Range(0, 130, ErrorMessage = "Age must be between 0 and 130")]
+        public int? Age { get; set; }
+
+        [StringLength(128, ErrorMessage = "Favorite Mechanic cannot exceed 128 characters")]
+        public string? FavoriteMechanic { get; set; }
+
+        [StringLength(1000, ErrorMessage = "Bio cannot exceed 1000 characters")]
+        public string? Bio { get; set; }
+
+        // Select values in format "kind|id"
+        public string? TopGame1 { get; set; }
+        public string? TopGame2 { get; set; }
+        public string? TopGame3 { get; set; }
     }
+
+    private class TopItem
+    {
+        public string kind { get; set; } = "board";
+        public int id { get; set; }
+        public string? title { get; set; }
+
+        public string ToValue() => $"{kind}|{id}";
+    }
+
+    private void ClearStatusMessage()
+    {
+        statusMessage = null;
+        StateHasChanged();
+    }
+
+    // Inline SVG data URI for placeholder avatar to avoid 404s
+    private const string PlaceholderAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='100%' height='100%' fill='%23e9ecef'/><text x='50%' y='52%' dominant-baseline='middle' text-anchor='middle' font-family='Segoe UI,Arial' font-size='18' fill='%236c757d'>👤</text></svg>";
 }

@@ -1,0 +1,70 @@
+@page "/about"
+@rendermode InteractiveServer
+
+<PageTitle>About • Board Hoard</PageTitle>
+
+<section class="about-hero">
+    <div class="container py-5">
+        <div class="row align-items-center g-4">
+            <div class="col-12 col-lg-6">
+                <h1 class="display-5 fw-bold">About Board Hoard</h1>
+                <p class="lead">Discover, review, and curate your favorite board and card games. Compete for the title of <strong>Board Lord</strong> and build your <strong>Meeple Vault</strong>.</p>
+                <div class="badges d-flex gap-2 flex-wrap">
+                    <span class="badge bg-primary"><i class="bi bi-trophy"></i> Rankings</span>
+                    <span class="badge bg-success"><i class="bi bi-people"></i> Community Reviews</span>
+                    <span class="badge bg-warning text-dark"><i class="bi bi-safe2"></i> Collections</span>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 text-center">
+                <img src="/images/BoardHoardLogo.png" alt="Board Hoard" class="about-logo img-fluid" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-content py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-12 col-lg-4">
+                <div class="feature-card">
+                    <div class="icon"><i class="bi bi-grid-3x3-gap"></i></div>
+                    <h3>Browse the Shelf</h3>
+                    <p>Explore a growing catalog of games with rich details, artwork, and community insights.</p>
+                </div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <div class="feature-card">
+                    <div class="icon"><i class="bi bi-stars"></i></div>
+                    <h3>Rate & Review</h3>
+                    <p>Share your experiences. Ratings power fair, data-driven rankings across the site.</p>
+                </div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <div class="feature-card">
+                    <div class="icon"><i class="bi bi-shield-lock"></i></div>
+                    <h3>Own Your Profile</h3>
+                    <p>Create a public profile with a display name and avatar. Showcase your top picks.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-3">
+            <div class="col-12">
+                <div class="callout">
+                    <h4>Open to contributions</h4>
+                    <p>We welcome feedback and ideas. Help us make Board Hoard an even better place for gamers.</p>
+                    <a href="/games" class="btn btn-primary"><i class="bi bi-grid"></i> Explore Games</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .about-hero { background: radial-gradient(1200px 600px at -10% -20%, rgba(0, 123, 255, .15), transparent 60%),
+                              radial-gradient(1000px 500px at 120% 10%, rgba(255, 193, 7, .15), transparent 60%); }
+    .about-logo { max-height: 180px; filter: drop-shadow(0 10px 20px rgba(0,0,0,.15)); }
+    .feature-card { background: var(--bs-body-bg); border-radius: 12px; padding: 1.25rem; box-shadow: 0 6px 18px rgba(0,0,0,.06); height: 100%; }
+    .feature-card .icon { font-size: 1.75rem; color: var(--bs-primary); margin-bottom: .5rem; }
+    .callout { background: linear-gradient(135deg, rgba(13,110,253,.08), rgba(255,193,7,.08)); border: 1px solid rgba(0,0,0,.05); border-radius: 12px; padding: 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+</style>

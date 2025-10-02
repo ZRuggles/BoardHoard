@@ -1,29 +1,36 @@
-﻿@if (!string.IsNullOrEmpty(DisplayMessage))
-{
-    var statusMessageClass = DisplayMessage.StartsWith("Error") ? "danger" : "success";
-    <div class="alert alert-@statusMessageClass" role="alert">
-        @DisplayMessage
-    </div>
-}
+﻿@using Microsoft.AspNetCore.Components
 
 @code {
-    private string? messageFromCookie;
+    [Inject] NavigationManager Nav { get; set; } = default!;
 
-    [Parameter]
-    public string? Message { get; set; }
+    [Parameter] public string? Message { get; set; }  // optional direct message
 
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
+    private string? _msg;
 
-    private string? DisplayMessage => Message ?? messageFromCookie;
-
-    protected override void OnInitialized()
+    protected override void OnParametersSet()
     {
-        messageFromCookie = HttpContext.Request.Cookies[IdentityRedirectManager.StatusCookieName];
-
-        if (messageFromCookie is not null)
-        {
-            HttpContext.Response.Cookies.Delete(IdentityRedirectManager.StatusCookieName);
-        }
+        // Prefer explicit Message param; otherwise read from querystring "status"
+        _msg = !string.IsNullOrWhiteSpace(Message) ? Message : GetQueryParam("status");
     }
+
+    private string? GetQueryParam(string key)
+    {
+        try
+        {
+            var uri = new Uri(Nav.Uri);
+            var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+            var raw = query[key];
+            return string.IsNullOrWhiteSpace(raw) ? null : raw;
+        }
+        catch { return null; }
+    }
+
+    private string CssClass =>
+        string.IsNullOrWhiteSpace(_msg) ? ""
+        : (_msg.StartsWith("Error:", StringComparison.OrdinalIgnoreCase) ? "text-danger" : "text-success");
+}
+
+@if (!string.IsNullOrWhiteSpace(_msg))
+{
+    <div class="@CssClass" role="status">@_msg</div>
 }

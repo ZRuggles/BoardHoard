@@ -32,12 +32,12 @@ else
 
                                         @if (ShowRatings)
                                         {
-                                            <div class="rating" title="@($"{g.AverageRating:0.0} stars • {(g.Ratings?.Count ?? 0)} ratings")">
-                                                @foreach (var cls in GetStarClasses(g.AverageRating))
+                                            <div class="rating" title="@($"{g.AvgRating:0.0} stars • {g.RatingsCount} ratings")">
+                                                @foreach (var cls in GetStarClasses((double)g.AvgRating))
                                                 {
                                                     <i class="@cls"></i>
                                                 }
-                                                <span class="count">(@(g.Ratings?.Count ?? 0))</span>
+                                                <span class="count">(@g.RatingsCount)</span>
                                             </div>
                                         }
 

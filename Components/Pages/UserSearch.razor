@@ -1,0 +1,120 @@
+@page "/user-search"
+@using Microsoft.EntityFrameworkCore
+@using BoardHoard.Data
+@inject ApplicationDbContext Db
+@rendermode InteractiveServer
+
+<PageTitle>User Search • Board Hoard</PageTitle>
+
+<div class="container py-4">
+    <h2 class="mb-3">Find Users</h2>
+    <div class="input-group mb-3" style="max-width:520px">
+        <span class="input-group-text"><i class="bi bi-search"></i></span>
+        <input class="form-control" @bind="search" @bind:event="oninput" placeholder="Search by username or display name…" />
+    </div>
+
+    @if (string.IsNullOrWhiteSpace(search))
+    {
+        <div class="text-muted">Start typing to search for people.</div>
+    }
+    else if (loading)
+    {
+        <div>Searching…</div>
+    }
+    else if (results.Count == 0)
+    {
+        <div class="text-muted">No users match "@search".</div>
+    }
+    else
+    {
+        <ul class="list-group">
+            @foreach (var r in results)
+            {
+                <li class="list-group-item d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="@(r.PhotoUrl ?? "/images/avatar-placeholder.png")" style="width:40px;height:40px;border-radius:50%;object-fit:cover" />
+                        <div>
+                            <a class="fw-semibold" href=@($"/u/{Uri.EscapeDataString(r.DisplayName)}")>@r.DisplayName</a>
+                            <div class="small text-muted">@r.UserName</div>
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+@code {
+    private string? search;
+    private bool loading = false;
+    private List<Result> results = new();
+
+    private CancellationTokenSource? _cts;
+
+    private class Result
+    {
+        public string UserId { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
+        public string DisplayName { get; set; } = string.Empty;
+        public string? PhotoUrl { get; set; }
+    }
+
+    private async Task SearchAsync(string term)
+    {
+        _cts?.Cancel();
+        _cts = new CancellationTokenSource();
+        var ct = _cts.Token;
+
+        loading = true;
+        try
+        {
+            term = (term ?? string.Empty).Trim();
+            if (string.IsNullOrEmpty(term))
+            {
+                results.Clear();
+                return;
+            }
+            var lower = term.ToLower();
+            results = await (from u in Db.Users
+                              where (u.UserName != null && u.UserName.ToLower().Contains(lower))
+                                 || (u.DisplayName != null && u.DisplayName.ToLower().Contains(lower))
+                              orderby u.UserName
+                              select new Result
+                              {
+                                  UserId = u.Id,
+                                  UserName = u.UserName!,
+                                  DisplayName = u.DisplayName ?? u.UserName!,
+                                  PhotoUrl = u.PhotoUrl
+                              })
+                              .Take(50)
+                              .ToListAsync(ct);
+        }
+        finally
+        {
+            loading = false;
+            StateHasChanged();
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await SearchAsync(search ?? string.Empty);
+    }
+
+    private async Task OnSearchChanged(ChangeEventArgs e)
+    {
+        search = e.Value?.ToString();
+        await SearchAsync(search ?? string.Empty);
+    }
+
+    private string? Search
+    {
+        get => search;
+        set
+        {
+            if (search == value) return;
+            search = value;
+            _ = SearchAsync(search ?? string.Empty);
+        }
+    }
+}

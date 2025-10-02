@@ -1,29 +1,38 @@
-﻿// ImageService.cs
-using System.Net.Http.Headers;
-using BoardHoard.Services;
-using Microsoft.AspNetCore.Components.Forms;
+﻿using Microsoft.AspNetCore.Components.Forms;
+using System.Net.Http.Json;
 
-public class ImageService(HttpClient http) : IImageService
+namespace BoardHoard.Services;
+
+public class ImageService : IImageService
 {
-    private readonly HttpClient _http = http;
+    private readonly HttpClient _http;
 
-    public async Task<string?> UploadAsync(IBrowserFile file, string? title, CancellationToken ct = default)
+    public ImageService(HttpClient http) => _http = http;
+
+    public async Task<ImageUploadResult?> UploadAsync(IBrowserFile file)
     {
+        if (file is null || file.Size == 0) return null;
+
+        // Create multipart form data
         using var content = new MultipartFormDataContent();
-        using var stream = file.OpenReadStream(maxAllowedSize: 10_000_000, ct);
-        var fileContent = new StreamContent(stream);
-        fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+        using var fileStream = file.OpenReadStream(maxAllowedSize: 5_000_000); // 5MB limit
+        using var streamContent = new StreamContent(fileStream);
 
-        content.Add(fileContent, "File", file.Name);
-        if (!string.IsNullOrWhiteSpace(title))
-            content.Add(new StringContent(title), "Title");
+        streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+        content.Add(streamContent, "file", file.Name);
 
-        var res = await _http.PostAsync("api/uploads", content, ct);
-        if (!res.IsSuccessStatusCode) return null;
-
-        var dto = await res.Content.ReadFromJsonAsync<UploadDto>(cancellationToken: ct);
-        return dto?.Url; // e.g. "/images/uploads/ticket-to-ride-20250221....jpg"
+        try
+        {
+            var response = await _http.PostAsync("/api/images", content);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<ImageUploadResult>();
+            }
+            return null;
+        }
+        catch
+        {
+            return null;
+        }
     }
-
-    private record UploadDto(string FileName, string Url);
 }

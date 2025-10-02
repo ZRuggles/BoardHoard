@@ -10,10 +10,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<UserProfile> UserProfiles => Set<UserProfile>();
     public DbSet<WallMessage> WallMessages => Set<WallMessage>();
 
+
     protected override void OnModelCreating(ModelBuilder b)
     {
         base.OnModelCreating(b);
 
+        // UserProfile config
         b.Entity<UserProfile>(e =>
         {
             e.HasIndex(p => p.UserId).IsUnique();
@@ -24,11 +26,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
              .OnDelete(DeleteBehavior.Cascade);
         });
 
+        // WallMessage config
         b.Entity<WallMessage>(e =>
         {
             e.Property(m => m.Body).HasMaxLength(1000);
 
-            // optional FKs (no navigation props needed)
             e.HasOne<ApplicationUser>()
              .WithMany()
              .HasForeignKey(m => m.OwnerUserId)

@@ -5,7 +5,9 @@ using BoardHoard.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http;
 using System.Runtime.Intrinsics.Arm;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,11 +15,22 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-var apiBase = new Uri("https://localhost:7021/");
+// Read API base from configuration with a fallback default
+var apiBaseStr = builder.Configuration["Api:BaseUrl"] ?? "https://localhost:7021/";
+var apiBase = new Uri(apiBaseStr);
 
-builder.Services.AddHttpClient<IBoardGameService, BoardGameService>(c => c.BaseAddress = apiBase);
-builder.Services.AddHttpClient<ICardGameService, CardGameService>(c => c.BaseAddress = apiBase);
-builder.Services.AddHttpClient<IImageService, ImageService>(c => { c.BaseAddress = apiBase; });
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<UserHeaderHandler>();
+
+builder.Services.AddHttpClient<IBoardGameService, BoardGameService>(c => c.BaseAddress = apiBase)
+    .AddHttpMessageHandler<UserHeaderHandler>();
+builder.Services.AddHttpClient<ICardGameService, CardGameService>(c => c.BaseAddress = apiBase)
+    .AddHttpMessageHandler<UserHeaderHandler>();
+builder.Services.AddHttpClient<IImageService, ImageService>(c => { c.BaseAddress = apiBase; })
+    .AddHttpMessageHandler<UserHeaderHandler>();
+builder.Services.AddHttpClient<IReviewsService, ReviewService>(c => c.BaseAddress = apiBase)
+    .AddHttpMessageHandler<UserHeaderHandler>();
+builder.Services.AddScoped<IProfileService, ProfileService>();
 
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
@@ -51,9 +64,13 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+builder.Services.AddControllers();
 
 var app = builder.Build();
-
+using (var scope = app.Services.CreateScope())
+{
+    await AdminSeeder.SeedAdminAsync(scope.ServiceProvider);
+}
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -75,8 +92,40 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+app.MapControllers();
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
+app.MapGet("/api/profile/me", async (UserManager<ApplicationUser> users, IProfileService svc, HttpContext ctx, CancellationToken ct) =>
+{
+    var userId = users.GetUserId(ctx.User)!;
+    var dto = await svc.GetMineAsync(userId, ct) ?? new ProfileViewDto { UserId = userId };
+    return Results.Ok(dto);
+}).RequireAuthorization();
 
+app.MapPost("/api/profile/update", async (UserManager<ApplicationUser> users, IProfileService svc, HttpContext ctx, ProfileUpdateDto dto, CancellationToken ct) =>
+{
+    var userId = users.GetUserId(ctx.User)!;
+    var ok = await svc.UpsertAsync(userId, dto, ct);
+    return ok ? Results.Ok() : Results.BadRequest();
+}).RequireAuthorization();
 app.Run();
+
+// Delegating handler to push authenticated user's id to the API
+internal class UserHeaderHandler(IHttpContextAccessor accessor) : DelegatingHandler
+{
+    private readonly IHttpContextAccessor _accessor = accessor;
+
+    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    {
+        var user = _accessor.HttpContext?.User;
+        var userId = user?.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!string.IsNullOrEmpty(userId))
+        {
+            // API expects X-UserId for create endpoints
+            if (!request.Headers.Contains("X-UserId"))
+                request.Headers.Add("X-UserId", userId);
+        }
+        return base.SendAsync(request, cancellationToken);
+    }
+}
