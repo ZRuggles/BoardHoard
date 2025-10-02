@@ -1,0 +1,6 @@
+@BHAPI_HostAddress = http://localhost:5199
+
+GET {{BHAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

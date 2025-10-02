@@ -1,44 +1,21 @@
-# Build output
+﻿# .NET / VS
 bin/
 obj/
-
-# User-specific files
 *.user
 *.suo
 *.userosscache
 *.sln.docstates
+.vs/
 
-# Visual Studio files
-*.vs/
-*.VC.db
-*.VC.opendb
+# publish outputs
+**/out/
 
-# NuGet packages
-*.nupkg
-packages/
-**/packages/*
-
-# ASP.NET/Blazor specific
-wwwroot/dist/
-wwwroot/node_modules/
-node_modules/
-npm-debug.log
-yarn-error.log
-
-# Configuration files
-appsettings.*.json
-
-# Logs and temp files
+# logs
 *.log
-*.tmp
 
-# OS generated files
-Thumbs.db
-.DS_Store
-
-# IDE settings
+# Rider / VS Code
 .idea/
 .vscode/
 
-# Publish output
-publish/
+# node leftovers (if any)
+node_modules/

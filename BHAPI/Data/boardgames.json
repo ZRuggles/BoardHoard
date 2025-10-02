@@ -1,0 +1,207 @@
+[
+  {
+    "id": 1,
+    "title": "Ticket to Ride",
+    "year": 2004,
+    "minPlayers": 2,
+    "maxPlayers": 5,
+    "imageUrl": "/images/ticketToRide.jpg",
+    "publisher": "Days of Wonder",
+    "description": "Collect train cards and claim routes across North America.",
+    "ageRating": 8,
+    "ratings": [
+      5,
+      4,
+      5,
+      4
+    ],
+    "averageRating": 4.5,
+    "rarityScore": 30,
+    "sentimentalScore": 60
+  },
+  {
+    "id": 2,
+    "title": "Catan",
+    "year": 1995,
+    "minPlayers": 3,
+    "maxPlayers": 4,
+    "imageUrl": "/images/Catan.jpg",
+    "publisher": "Kosmos",
+    "description": "Trade, build, and settle the island of Catan.",
+    "ageRating": 10,
+    "ratings": [
+      5,
+      5,
+      4
+    ],
+    "averageRating": 4.666666666666667,
+    "rarityScore": 25,
+    "sentimentalScore": 55
+  },
+  {
+    "id": 3,
+    "title": "Secret Hitler",
+    "year": 2016,
+    "minPlayers": 5,
+    "maxPlayers": 10,
+    "imageUrl": "/images/SecretHitler.png",
+    "publisher": "Goat, Wolf \u0026 Cabbage",
+    "description": "Social-deduction set in 1930s Germany\u2014Liberals vs. Fascists. Find and stop the Secret Hitler.",
+    "ageRating": 17,
+    "ratings": [
+      5,
+      4,
+      4,
+      5
+    ],
+    "averageRating": 4.5,
+    "rarityScore": 35,
+    "sentimentalScore": 40
+  },
+  {
+    "id": 4,
+    "title": "Lords of Waterdeep",
+    "year": 2012,
+    "minPlayers": 2,
+    "maxPlayers": 5,
+    "imageUrl": "/images/LordsOfWaterdeep.jpg",
+    "publisher": "Wizards of the Coast",
+    "description": "Worker-placement in the City of Splendors\u2014send agents, complete quests, and control buildings.",
+    "ageRating": 12,
+    "ratings": [
+      5,
+      5,
+      4,
+      5
+    ],
+    "averageRating": 4.75,
+    "rarityScore": 40,
+    "sentimentalScore": 50
+  },
+  {
+    "id": 5,
+    "title": "Champions of Midgard",
+    "year": 2015,
+    "minPlayers": 2,
+    "maxPlayers": 4,
+    "imageUrl": "/images/ChampionsOfMidgard.jpg",
+    "publisher": "Grey Fox Games",
+    "description": "Viking-themed dice/worker placement\u2014gather warriors to slay trolls, draugr, and epic monsters.",
+    "ageRating": 13,
+    "ratings": [
+      4,
+      4,
+      5
+    ],
+    "averageRating": 4.333333333333333,
+    "rarityScore": 45,
+    "sentimentalScore": 45
+  },
+  {
+    "id": 6,
+    "title": "Wingspan",
+    "year": 2019,
+    "minPlayers": 1,
+    "maxPlayers": 5,
+    "imageUrl": "/images/Wingspan.jpg",
+    "publisher": "Stonemaier Games",
+    "description": "Engine-builder about attracting birds to habitats\u2014chain powers, manage food, eggs, and card draws.",
+    "ageRating": 10,
+    "ratings": [
+      5,
+      5,
+      5,
+      4
+    ],
+    "averageRating": 4.75,
+    "rarityScore": 20,
+    "sentimentalScore": 50
+  },
+  {
+    "id": 7,
+    "title": "The Game of Life",
+    "year": 1960,
+    "minPlayers": 2,
+    "maxPlayers": 6,
+    "imageUrl": "/images/GameOfLife.jpg",
+    "publisher": "Milton Bradley (Hasbro)",
+    "description": "Spin the wheel, choose life paths, and race to retirement with the most cash.",
+    "ageRating": 8,
+    "ratings": [
+      4,
+      4,
+      3
+    ],
+    "averageRating": 3.6666666666666665,
+    "rarityScore": 30,
+    "sentimentalScore": 70
+  },
+  {
+    "id": 8,
+    "title": "Monopoly",
+    "year": 1935,
+    "minPlayers": 2,
+    "maxPlayers": 6,
+    "imageUrl": "/images/Monopoly.jpg",
+    "publisher": "Parker Brothers (Hasbro)",
+    "description": "Buy, trade, and build...",
+    "ageRating": 8,
+    "ratings": [
+      3,
+      3,
+      4
+    ],
+    "averageRating": 3.3333333333333335,
+    "rarityScore": 20,
+    "sentimentalScore": 85
+  },
+  {
+    "id": 9,
+    "title": "Hues and Cues",
+    "year": 2020,
+    "minPlayers": 3,
+    "maxPlayers": 10,
+    "imageUrl": "/images/HuesAndCues.jpg",
+    "publisher": "The Op (USAopoly)",
+    "description": "Give one- or two-word clues to guide players to a specific color on a massive spectrum board.",
+    "ageRating": 8,
+    "ratings": [
+      4,
+      5,
+      4
+    ],
+    "averageRating": 4.333333333333333,
+    "rarityScore": 25,
+    "sentimentalScore": 40
+  },
+  {
+    "id": 10,
+    "title": "Sorry!",
+    "year": 1934,
+    "minPlayers": 2,
+    "maxPlayers": 4,
+    "imageUrl": "/images/Sorry!.jpg",
+    "publisher": "Parker Brothers",
+    "description": " Players move their three or four pieces around the board, attempting to get all of their pieces \u0022home\u0022 before any other player",
+    "ageRating": 6,
+    "ratings": [],
+    "averageRating": 0,
+    "rarityScore": 10,
+    "sentimentalScore": 5
+  },
+  {
+    "id": 11,
+    "title": "Camel Up",
+    "year": 2014,
+    "minPlayers": 2,
+    "maxPlayers": 8,
+    "imageUrl": "/images/CamelUp.png",
+    "publisher": "Pegasus Spiele",
+    "description": "Players place bets on a camel race in the desert; the player who wins the most money is the winner of the game",
+    "ageRating": 8,
+    "ratings": [],
+    "averageRating": 0,
+    "rarityScore": 15,
+    "sentimentalScore": 40
+  }
+]
