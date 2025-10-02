@@ -42,7 +42,7 @@ const string AllowFrontend = "AllowFrontend";
 
 // Accept an array of origins via env vars:
 //   ALLOWED_ORIGINS__0 = https://localhost:7003
-//   ALLOWED_ORIGINS__1 = https://your-frontend.onrender.com
+//   ALLOWED_ORIGINS__1 = https://boardhoard.onrender.com
 var allowedOrigins = new List<string>();
 
 // Also support appsettings: "AllowedOrigins": ["..."]
@@ -90,12 +90,22 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
 
-// -------------------- Auto-migrate on startup if requested --------------------
+// -------------------- Auto-migrate on startup if requested (UPDATED) --------------------
 if (Environment.GetEnvironmentVariable("AUTO_MIGRATE") == "1")
 {
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<GamesDbContext>();
-    db.Database.Migrate();
+
+    if (useSqlite)
+    {
+        // On SQLite we do NOT run migrations; just ensure the schema exists.
+        db.Database.EnsureCreated();
+    }
+    else
+    {
+        // On SQL Server we apply EF migrations (requires migrations to be in sync).
+        db.Database.Migrate();
+    }
 }
 
 // -------------------- Aggregate backfill (safe skip if Reviews table missing) --------------------
