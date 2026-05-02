@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Net.Http;
 using System.Security.Claims;
 using System.IO;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,16 +25,23 @@ var apiBase = new Uri(apiBaseStr);
 // ---------------------- HTTP clients (unchanged) ----------------------
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<UserHeaderHandler>();
+builder.Services.AddTransient<LocalhostUrlRewriterHandler>();
 
 builder.Services.AddHttpClient<IBoardGameService, BoardGameService>(c => c.BaseAddress = apiBase)
-    .AddHttpMessageHandler<UserHeaderHandler>();
+    .AddHttpMessageHandler<UserHeaderHandler>()
+    .AddHttpMessageHandler<LocalhostUrlRewriterHandler>();
+
 builder.Services.AddHttpClient<ICardGameService, CardGameService>(c => c.BaseAddress = apiBase)
-    .AddHttpMessageHandler<UserHeaderHandler>();
-builder.Services.AddHttpClient<IImageService, ImageService>(c => { c.BaseAddress = apiBase; })
-    .AddHttpMessageHandler<UserHeaderHandler>();
+    .AddHttpMessageHandler<UserHeaderHandler>()
+    .AddHttpMessageHandler<LocalhostUrlRewriterHandler>();
+
+builder.Services.AddHttpClient<IImageService, ImageService>(c => c.BaseAddress = apiBase)
+    .AddHttpMessageHandler<UserHeaderHandler>()
+    .AddHttpMessageHandler<LocalhostUrlRewriterHandler>();
+
 builder.Services.AddHttpClient<IReviewsService, ReviewService>(c => c.BaseAddress = apiBase)
-    .AddHttpMessageHandler<UserHeaderHandler>();
-builder.Services.AddScoped<IProfileService, ProfileService>();
+    .AddHttpMessageHandler<UserHeaderHandler>()
+    .AddHttpMessageHandler<LocalhostUrlRewriterHandler>();
 
 // ---------------------- Identity (unchanged) ----------------------
 builder.Services.AddCascadingAuthenticationState();
@@ -147,14 +155,25 @@ app.MapControllers();
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
 
-app.MapGet("/api/profile/me", async (UserManager<ApplicationUser> users, IProfileService svc, HttpContext ctx, CancellationToken ct) =>
+// GET /api/profile/me
+app.MapGet("/api/profile/me", async (
+    [FromServices] UserManager<ApplicationUser> users,
+    [FromServices] IProfileService svc,
+    HttpContext ctx,
+    CancellationToken ct) =>
 {
     var userId = users.GetUserId(ctx.User)!;
     var dto = await svc.GetMineAsync(userId, ct) ?? new ProfileViewDto { UserId = userId };
     return Results.Ok(dto);
 }).RequireAuthorization();
 
-app.MapPost("/api/profile/update", async (UserManager<ApplicationUser> users, IProfileService svc, HttpContext ctx, ProfileUpdateDto dto, CancellationToken ct) =>
+// POST /api/profile/update
+app.MapPost("/api/profile/update", async (
+    [FromServices] UserManager<ApplicationUser> users,
+    [FromServices] IProfileService svc,
+    HttpContext ctx,
+    [FromBody] ProfileUpdateDto dto,
+    CancellationToken ct) =>
 {
     var userId = users.GetUserId(ctx.User)!;
     var ok = await svc.UpsertAsync(userId, dto, ct);

@@ -43,6 +43,7 @@ else
                         <span class="badge-sent"><i class="bi bi-heart-fill"></i> @g.SentimentalScore</span>
                     </div>
                 </div>
+                <a class="stretched-link" href="@($"/game/{GetKind(g)}/{g.Id}")"></a>
             </div>
         }
     </div>
@@ -94,5 +95,8 @@ else
             .Take(12)
             .ToList();
     }
+
+    private static string GetKind(IGame g) => g is BoardGame ? "board" : "card";
+
 }
 

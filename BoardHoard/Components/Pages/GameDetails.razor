@@ -2,6 +2,7 @@
 @using BoardHoard.Services
 @using Boardgames.Shared
 @using System.ComponentModel.DataAnnotations;
+@using Microsoft.AspNetCore.Components.Web
 @inject BoardHoard.Services.IBoardGameService BoardSvc
 @inject BoardHoard.Services.ICardGameService CardSvc
 @inject IJSRuntime JS
@@ -159,6 +160,53 @@ else
                         <div class="col-md-3">
                             <label class="form-label">Sentimental (0–100)</label>
                             <InputNumber class="form-control" @bind-Value="editModel!.SentimentalScore" min="0" max="100" />
+                        </div>
+
+
+                        <div class="col-12">
+                            <label class="form-label">Tags</label>
+
+                            <!-- Show chips for selected tags -->
+                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                @if (editModel?.Tags is { Count: > 0 })
+                                {
+                                    @foreach (var t in editModel.Tags)
+                                    {
+                                        var d = TagCatalog.Describe(t);
+                                        var label = d?.Label ?? TagCatalog.ParseValue(t) ?? t;
+                                        <span class="badge rounded-pill text-bg-secondary" title="@d?.Hint">@label</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <em class="text-muted">No tags yet</em>
+                                }
+                            </div>
+
+                            <!-- Allowed tags as checkboxes -->
+                            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-2">
+                                @foreach (var g in TagCatalog.Groups)
+                                {
+                                    <div class="col">
+                                        <strong class="d-block mb-1 text-capitalize">@g.Key</strong>
+                                        @foreach (var opt in g.Options)
+                                        {
+                                            var tag = TagCatalog.Compose(g.Key, opt.Value);
+                                            var isChecked = editModel?.Tags?.Any(x => string.Equals(x, tag, StringComparison.OrdinalIgnoreCase)) == true;
+
+                                            <div class="form-check">
+                                                <input class="form-check-input"
+                                                       type="checkbox"
+                                                       checked="@isChecked"
+                                                       @onchange="(e) => ToggleTag(tag, (bool)e.Value!)" />
+                                                <label class="form-check-label" title="@opt.Hint">@opt.Label</label>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="form-text">Choose at least one tag. Only allowed tags can be selected.</div>
                         </div>
 
                         @if (kind == "card")
@@ -396,6 +444,7 @@ else
     private string? myUserId;
     private string editKind = "board";
     private bool editingReview = false;
+    private string? newTag;
 
     private Dictionary<string, UserProfile?> _profileCache = new();
 
@@ -481,6 +530,59 @@ else
             }
         }
     }
+    
+    
+    // 3) Toggle into editModel.Tags (create list if null)
+    private void ToggleTag(string tag, bool isChecked)
+    {
+        if (editModel is null) return;
+        editModel.Tags ??= new List<string>();
+
+        var exists = editModel.Tags.Any(x => string.Equals(x, tag, StringComparison.OrdinalIgnoreCase));
+
+        if (isChecked && !exists)
+            editModel.Tags.Add(tag);
+        else if (!isChecked && exists)
+            editModel.Tags.RemoveAll(x => string.Equals(x, tag, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private void OnTagKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            AddTag();
+        }
+    }
+
+    private void EnsureTagsList()
+    {
+        if (editModel?.Tags == null)
+            editModel!.Tags = new List<string>();
+    }
+
+    private static string NormalizeTag(string t)
+        => (t ?? string.Empty).Trim();
+
+    private void AddTag()
+    {
+        if (editModel is null) return;
+        EnsureTagsList();
+        var tag = NormalizeTag(newTag ?? "");
+        if (string.IsNullOrWhiteSpace(tag)) return;
+
+        // prevent dupes (case-insensitive)
+        if (!editModel.Tags.Any(x => string.Equals(x, tag, StringComparison.OrdinalIgnoreCase)))
+            editModel.Tags.Add(tag);
+
+        newTag = null;
+    }
+
+    private void RemoveTag(string tag)
+    {
+        if (editModel?.Tags is null) return;
+        var idx = editModel.Tags.FindIndex(x => string.Equals(x, tag, StringComparison.OrdinalIgnoreCase));
+        if (idx >= 0) editModel.Tags.RemoveAt(idx);
+    }
 
     private void EnterEdit()
     {
@@ -502,6 +604,11 @@ else
     private async Task SaveAsync()
     {
         if (editModel is null) return;
+        if (editModel.Tags is null || editModel.Tags.Count == 0)
+        {
+            await JS.InvokeVoidAsync("alert", "Please add at least one tag before saving.");
+            return;
+        }
         saving = true;
         try
         {
@@ -522,7 +629,9 @@ else
                         Description = editModel.Description,
                         ageRating = editModel.ageRating,
                         RarityScore = editModel.RarityScore,
-                        SentimentalScore = editModel.SentimentalScore
+                        SentimentalScore = editModel.SentimentalScore,
+                        cardCount = (editModel as CardGame)?.cardCount ?? 0,
+                        Tags = editModel.Tags?.ToList() ?? new List<string>() // <-- add
                     };
                     var created = await CardSvc.CreateAsync(newModel);
                     if (created is not null)
@@ -535,19 +644,20 @@ else
                 else // switching to board
                 {
                     var newModel = new BoardGame
-                    {
-                        Title = editModel.Title,
-                        Year = editModel.Year,
-                        MinPlayers = editModel.MinPlayers,
-                        MaxPlayers = editModel.MaxPlayers,
-                        ImageUrl = editModel.ImageUrl,
-                        ImageId = editModel.ImageId,
-                        Publisher = editModel.Publisher,
-                        Description = editModel.Description,
-                        ageRating = editModel.ageRating,
-                        RarityScore = editModel.RarityScore,
-                        SentimentalScore = editModel.SentimentalScore
-                    };
+                        {
+                            Title = editModel.Title,
+                            Year = editModel.Year,
+                            MinPlayers = editModel.MinPlayers,
+                            MaxPlayers = editModel.MaxPlayers,
+                            ImageUrl = editModel.ImageUrl,
+                            ImageId = editModel.ImageId,
+                            Publisher = editModel.Publisher,
+                            Description = editModel.Description,
+                            ageRating = editModel.ageRating,
+                            RarityScore = editModel.RarityScore,
+                            SentimentalScore = editModel.SentimentalScore,
+                            Tags = editModel.Tags?.ToList() ?? new List<string>() // <-- add
+                        };
                     var created = await BoardSvc.CreateAsync(newModel);
                     if (created is not null)
                     {
@@ -571,8 +681,26 @@ else
 
                 if (ok)
                 {
-                    // refresh view state with the saved model
-                    game = kind == "card" ? (IGame)Clone((CardGame)editModel) : Clone((BoardGame)editModel);
+                    // Re-fetch the record
+                    game = kind == "card"
+                        ? await CardSvc.GetByIdAsync(id)
+                        : await BoardSvc.GetByIdAsync(id);
+
+                    // Force-refresh rating + count from the reviews service
+                    var avg = await Reviews.GetAverageAsync(KindEnum, id);
+                    var cnt = await Reviews.GetCountAsync(KindEnum, id);
+
+                    if (game is BoardGame bg)
+                    {
+                        bg.AvgRating = (decimal)avg;
+                        bg.RatingsCount = cnt;
+                    }
+                    else if (game is CardGame cg)
+                    {
+                        cg.AvgRating = (decimal)avg;
+                        cg.RatingsCount = cnt;
+                    }
+
                     isEditing = false;
                     editModel = null;
                     StateHasChanged();
@@ -689,38 +817,40 @@ else
     }
 
     // shallow clones (enough for our simple models)
-    private static BoardGame Clone(BoardGame g) => new()
-        {
-            Id = g.Id,
-            Title = g.Title,
-            Year = g.Year,
-            MinPlayers = g.MinPlayers,
-            MaxPlayers = g.MaxPlayers,
-            ImageUrl = g.ImageUrl,
-            ImageId = g.ImageId,
-            Publisher = g.Publisher,
-            Description = g.Description,
-            ageRating = g.ageRating,
-            RarityScore = g.RarityScore,
-            SentimentalScore = g.SentimentalScore
-        };
+private static BoardGame Clone(BoardGame g) => new()
+{
+    Id = g.Id,
+    Title = g.Title,
+    Year = g.Year,
+    MinPlayers = g.MinPlayers,
+    MaxPlayers = g.MaxPlayers,
+    ImageUrl = g.ImageUrl,
+    ImageId = g.ImageId,
+    Publisher = g.Publisher,
+    Description = g.Description,
+    ageRating = g.ageRating,
+    RarityScore = g.RarityScore,
+    SentimentalScore = g.SentimentalScore,
+    Tags = g.Tags?.ToList() ?? new List<string>()   // <-- add this
+};
 
-    private static CardGame Clone(CardGame g) => new()
-        {
-            Id = g.Id,
-            Title = g.Title,
-            Year = g.Year,
-            MinPlayers = g.MinPlayers,
-            MaxPlayers = g.MaxPlayers,
-            ImageUrl = g.ImageUrl,
-            ImageId = g.ImageId,
-            Publisher = g.Publisher,
-            Description = g.Description,
-            ageRating = g.ageRating,
-            RarityScore = g.RarityScore,
-            SentimentalScore = g.SentimentalScore,
-            cardCount = g.cardCount
-        };
+private static CardGame Clone(CardGame g) => new()
+{
+    Id = g.Id,
+    Title = g.Title,
+    Year = g.Year,
+    MinPlayers = g.MinPlayers,
+    MaxPlayers = g.MaxPlayers,
+    ImageUrl = g.ImageUrl,
+    ImageId = g.ImageId,
+    Publisher = g.Publisher,
+    Description = g.Description,
+    ageRating = g.ageRating,
+    RarityScore = g.RarityScore,
+    SentimentalScore = g.SentimentalScore,
+    cardCount = g.cardCount,
+    Tags = g.Tags?.ToList() ?? new List<string>()   // <-- add this
+};
 
     public class ReviewInput
     {
